@@ -1,0 +1,145 @@
+@charset "UTF-8";
+@font-face {
+  font-family: "flaticon_finspire";
+  src: url("./flaticon_finspire.woff2?9d456fc781c43f73052307ef0e274a28") format("woff2"), url("./flaticon_finspire.woff?9d456fc781c43f73052307ef0e274a28") format("woff"), url("./flaticon_finspire.eot?9d456fc781c43f73052307ef0e274a28#iefix") format("embedded-opentype"), url("./flaticon_finspire.ttf?9d456fc781c43f73052307ef0e274a28") format("truetype"), url("./flaticon_finspire.svg?9d456fc781c43f73052307ef0e274a28#flaticon_finspire") format("svg"); }
+i[class^="flaticon-"]:before, i[class*=" flaticon-"]:before {
+  font-family: flaticon_finspire !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+.flaticon-down:before {
+  content: ""; }
+
+.flaticon-two-lines:before {
+  content: ""; }
+
+.flaticon-mozy:before {
+  content: ""; }
+
+.flaticon-star:before {
+  content: ""; }
+
+.flaticon-call:before {
+  content: ""; }
+
+.flaticon-email:before {
+  content: ""; }
+
+.flaticon-alarm:before {
+  content: ""; }
+
+.flaticon-meeting:before {
+  content: ""; }
+
+.flaticon-target:before {
+  content: ""; }
+
+.flaticon-risk:before {
+  content: ""; }
+
+.flaticon-research:before {
+  content: ""; }
+
+.flaticon-tax:before {
+  content: ""; }
+
+.flaticon-business-presentation:before {
+  content: ""; }
+
+.flaticon-strategy:before {
+  content: ""; }
+
+.flaticon-raw:before {
+  content: ""; }
+
+.flaticon-user-guide:before {
+  content: ""; }
+
+.flaticon-trophy:before {
+  content: ""; }
+
+.flaticon-hospital-building:before {
+  content: ""; }
+
+.flaticon-presentation:before {
+  content: ""; }
+
+.flaticon-play:before {
+  content: ""; }
+
+.flaticon-idea:before {
+  content: ""; }
+
+.flaticon-arrows:before {
+  content: ""; }
+
+.flaticon-business-growth:before {
+  content: ""; }
+
+.flaticon-quotation-mark:before {
+  content: ""; }
+
+.flaticon-facebook-app-symbol:before {
+  content: ""; }
+
+.flaticon-instagram:before {
+  content: ""; }
+
+.flaticon-twitter:before {
+  content: ""; }
+
+.flaticon-youtube:before {
+  content: ""; }
+
+.flaticon-right-arrow:before {
+  content: ""; }
+
+.flaticon-world:before {
+  content: ""; }
+
+.flaticon-up:before {
+  content: ""; }
+
+.flaticon-headphone:before {
+  content: ""; }
+
+.flaticon-check:before {
+  content: ""; }
+
+.flaticon-asset-management:before {
+  content: ""; }
+
+.flaticon-excellence:before {
+  content: ""; }
+
+.flaticon-round:before {
+  content: ""; }
+
+.flaticon-playstore:before {
+  content: ""; }
+
+.flaticon-app-store:before {
+  content: ""; }
+
+.flaticon-high-five:before {
+  content: ""; }
+
+.flaticon-badge:before {
+  content: ""; }
+
+.flaticon-vision-and-mission:before {
+  content: ""; }
+
+.flaticon-location:before {
+  content: ""; }
+
+.flaticon-search:before {
+  content: ""; }
+
+.flaticon-search-interface-symbol:before {
+  content: ""; }

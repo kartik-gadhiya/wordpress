@@ -1,0 +1,201 @@
+$flaticon_finspire-font: "flaticon_finspire";
+
+@font-face {
+    font-family: $flaticon_finspire-font;
+    src: url("./flaticon_finspire.woff2?9d456fc781c43f73052307ef0e274a28") format("woff2"),
+url("./flaticon_finspire.woff?9d456fc781c43f73052307ef0e274a28") format("woff"),
+url("./flaticon_finspire.eot?9d456fc781c43f73052307ef0e274a28#iefix") format("embedded-opentype"),
+url("./flaticon_finspire.ttf?9d456fc781c43f73052307ef0e274a28") format("truetype"),
+url("./flaticon_finspire.svg?9d456fc781c43f73052307ef0e274a28#flaticon_finspire") format("svg");
+}
+
+i[class^="flaticon-"]:before, i[class*=" flaticon-"]:before {
+    font-family: flaticon_finspire !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+$flaticon_finspire-map: (
+    "down": "\f101",
+    "two-lines": "\f102",
+    "mozy": "\f103",
+    "star": "\f104",
+    "call": "\f105",
+    "email": "\f106",
+    "alarm": "\f107",
+    "meeting": "\f108",
+    "target": "\f109",
+    "risk": "\f10a",
+    "research": "\f10b",
+    "tax": "\f10c",
+    "business-presentation": "\f10d",
+    "strategy": "\f10e",
+    "raw": "\f10f",
+    "user-guide": "\f110",
+    "trophy": "\f111",
+    "hospital-building": "\f112",
+    "presentation": "\f113",
+    "play": "\f114",
+    "idea": "\f115",
+    "arrows": "\f116",
+    "business-growth": "\f117",
+    "quotation-mark": "\f118",
+    "facebook-app-symbol": "\f119",
+    "instagram": "\f11a",
+    "twitter": "\f11b",
+    "youtube": "\f11c",
+    "right-arrow": "\f11d",
+    "world": "\f11e",
+    "up": "\f11f",
+    "headphone": "\f120",
+    "check": "\f121",
+    "asset-management": "\f122",
+    "excellence": "\f123",
+    "round": "\f124",
+    "playstore": "\f125",
+    "app-store": "\f126",
+    "high-five": "\f127",
+    "badge": "\f128",
+    "vision-and-mission": "\f129",
+    "location": "\f12a",
+    "search": "\f12b",
+    "search-interface-symbol": "\f12c",
+);
+
+.flaticon-down:before {
+    content: map-get($flaticon_finspire-map, "down");
+}
+.flaticon-two-lines:before {
+    content: map-get($flaticon_finspire-map, "two-lines");
+}
+.flaticon-mozy:before {
+    content: map-get($flaticon_finspire-map, "mozy");
+}
+.flaticon-star:before {
+    content: map-get($flaticon_finspire-map, "star");
+}
+.flaticon-call:before {
+    content: map-get($flaticon_finspire-map, "call");
+}
+.flaticon-email:before {
+    content: map-get($flaticon_finspire-map, "email");
+}
+.flaticon-alarm:before {
+    content: map-get($flaticon_finspire-map, "alarm");
+}
+.flaticon-meeting:before {
+    content: map-get($flaticon_finspire-map, "meeting");
+}
+.flaticon-target:before {
+    content: map-get($flaticon_finspire-map, "target");
+}
+.flaticon-risk:before {
+    content: map-get($flaticon_finspire-map, "risk");
+}
+.flaticon-research:before {
+    content: map-get($flaticon_finspire-map, "research");
+}
+.flaticon-tax:before {
+    content: map-get($flaticon_finspire-map, "tax");
+}
+.flaticon-business-presentation:before {
+    content: map-get($flaticon_finspire-map, "business-presentation");
+}
+.flaticon-strategy:before {
+    content: map-get($flaticon_finspire-map, "strategy");
+}
+.flaticon-raw:before {
+    content: map-get($flaticon_finspire-map, "raw");
+}
+.flaticon-user-guide:before {
+    content: map-get($flaticon_finspire-map, "user-guide");
+}
+.flaticon-trophy:before {
+    content: map-get($flaticon_finspire-map, "trophy");
+}
+.flaticon-hospital-building:before {
+    content: map-get($flaticon_finspire-map, "hospital-building");
+}
+.flaticon-presentation:before {
+    content: map-get($flaticon_finspire-map, "presentation");
+}
+.flaticon-play:before {
+    content: map-get($flaticon_finspire-map, "play");
+}
+.flaticon-idea:before {
+    content: map-get($flaticon_finspire-map, "idea");
+}
+.flaticon-arrows:before {
+    content: map-get($flaticon_finspire-map, "arrows");
+}
+.flaticon-business-growth:before {
+    content: map-get($flaticon_finspire-map, "business-growth");
+}
+.flaticon-quotation-mark:before {
+    content: map-get($flaticon_finspire-map, "quotation-mark");
+}
+.flaticon-facebook-app-symbol:before {
+    content: map-get($flaticon_finspire-map, "facebook-app-symbol");
+}
+.flaticon-instagram:before {
+    content: map-get($flaticon_finspire-map, "instagram");
+}
+.flaticon-twitter:before {
+    content: map-get($flaticon_finspire-map, "twitter");
+}
+.flaticon-youtube:before {
+    content: map-get($flaticon_finspire-map, "youtube");
+}
+.flaticon-right-arrow:before {
+    content: map-get($flaticon_finspire-map, "right-arrow");
+}
+.flaticon-world:before {
+    content: map-get($flaticon_finspire-map, "world");
+}
+.flaticon-up:before {
+    content: map-get($flaticon_finspire-map, "up");
+}
+.flaticon-headphone:before {
+    content: map-get($flaticon_finspire-map, "headphone");
+}
+.flaticon-check:before {
+    content: map-get($flaticon_finspire-map, "check");
+}
+.flaticon-asset-management:before {
+    content: map-get($flaticon_finspire-map, "asset-management");
+}
+.flaticon-excellence:before {
+    content: map-get($flaticon_finspire-map, "excellence");
+}
+.flaticon-round:before {
+    content: map-get($flaticon_finspire-map, "round");
+}
+.flaticon-playstore:before {
+    content: map-get($flaticon_finspire-map, "playstore");
+}
+.flaticon-app-store:before {
+    content: map-get($flaticon_finspire-map, "app-store");
+}
+.flaticon-high-five:before {
+    content: map-get($flaticon_finspire-map, "high-five");
+}
+.flaticon-badge:before {
+    content: map-get($flaticon_finspire-map, "badge");
+}
+.flaticon-vision-and-mission:before {
+    content: map-get($flaticon_finspire-map, "vision-and-mission");
+}
+.flaticon-location:before {
+    content: map-get($flaticon_finspire-map, "location");
+}
+.flaticon-search:before {
+    content: map-get($flaticon_finspire-map, "search");
+}
+.flaticon-search-interface-symbol:before {
+    content: map-get($flaticon_finspire-map, "search-interface-symbol");
+}
