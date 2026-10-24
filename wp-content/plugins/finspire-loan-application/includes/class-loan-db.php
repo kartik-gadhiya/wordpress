@@ -78,11 +78,39 @@ class Finspire_Loan_DB {
         global $wpdb;
         $table_name = self::get_table_name();
         $cols = $wpdb->get_col( "DESC $table_name", 0 );
-        if ( is_array( $cols ) && ! in_array( 'online_banking_verification', $cols, true ) ) {
+        if ( ! is_array( $cols ) || empty( $cols ) ) {
+            return;
+        }
+
+        if ( ! in_array( 'phone', $cols, true ) ) {
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN phone varchar(50) NOT NULL DEFAULT '' AFTER email" );
+        }
+        if ( ! in_array( 'dob', $cols, true ) ) {
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN dob varchar(30) DEFAULT '' AFTER phone" );
+        }
+        if ( ! in_array( 'ssn_masked', $cols, true ) ) {
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN ssn_masked varchar(30) DEFAULT '' AFTER dob" );
+        }
+        if ( ! in_array( 'bank_name', $cols, true ) ) {
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN bank_name varchar(150) DEFAULT '' AFTER country" );
+        }
+        if ( ! in_array( 'routing_number', $cols, true ) ) {
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN routing_number varchar(50) DEFAULT '' AFTER bank_name" );
+        }
+        if ( ! in_array( 'account_number_masked', $cols, true ) ) {
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN account_number_masked varchar(50) DEFAULT '' AFTER routing_number" );
+        }
+        if ( ! in_array( 'bank_verified', $cols, true ) ) {
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN bank_verified tinyint(1) NOT NULL DEFAULT 1 AFTER account_number_masked" );
+        }
+        if ( ! in_array( 'online_banking_verification', $cols, true ) ) {
             $wpdb->query( "ALTER TABLE $table_name ADD COLUMN online_banking_verification varchar(255) DEFAULT '' AFTER bank_verified" );
         }
-        if ( is_array( $cols ) && ! in_array( 'contact_consent', $cols, true ) ) {
+        if ( ! in_array( 'contact_consent', $cols, true ) ) {
             $wpdb->query( "ALTER TABLE $table_name ADD COLUMN contact_consent tinyint(1) NOT NULL DEFAULT 1 AFTER online_banking_verification" );
+        }
+        if ( ! in_array( 'loan_purpose', $cols, true ) ) {
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN loan_purpose varchar(100) DEFAULT '' AFTER monthly_income" );
         }
     }
 
