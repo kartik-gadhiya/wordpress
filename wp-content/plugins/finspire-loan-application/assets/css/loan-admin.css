@@ -178,3 +178,140 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Click to Reveal & Copy Sensitive Information (Admin Exclusive) */
+.fin-admin-reveal-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    vertical-align: middle;
+}
+
+.fin-admin-reveal-inline {
+    gap: 4px;
+}
+
+.fin-reveal-text {
+    cursor: pointer;
+    display: inline-block;
+    padding: 3px 8px;
+    background: #f1f5f9;
+    border: 1px dashed #94a3b8;
+    border-radius: 4px;
+    color: #1e293b;
+    font-size: 13px;
+    font-family: Consolas, Monaco, monospace;
+    transition: all 0.2s ease;
+    user-select: all;
+}
+
+.fin-reveal-text:hover {
+    background: #e0f2fe;
+    border-color: #0284c7;
+    color: #0369a1;
+}
+
+.fin-reveal-text:focus {
+    outline: 2px solid #0284c7;
+    outline-offset: 1px;
+}
+
+.fin-reveal-text[data-state="revealed"] {
+    background: #fef2f2;
+    border: 1px solid #ef4444;
+    color: #b91c1c;
+    font-weight: 700;
+}
+
+.fin-reveal-password {
+    letter-spacing: 1.5px;
+}
+
+.fin-reveal-password[data-state="revealed"] {
+    letter-spacing: normal;
+}
+
+.fin-reveal-btn {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 4px;
+    height: 28px !important;
+    line-height: 26px !important;
+    padding: 0 9px !important;
+    font-size: 11px !important;
+    color: #475569 !important;
+    border-color: #cbd5e1 !important;
+    background: #ffffff !important;
+}
+
+.fin-reveal-btn:hover {
+    color: #0f172a !important;
+    border-color: #94a3b8 !important;
+    background: #f8fafc !important;
+}
+
+.fin-reveal-btn .dashicons {
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    vertical-align: middle;
+}
+
+.fin-reveal-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px 4px;
+    color: #64748b;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.fin-reveal-icon-btn:hover {
+    color: #0284c7;
+    background-color: #e0f2fe;
+}
+
+.fin-reveal-icon-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+}
+
+.fin-copy-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 28px !important;
+    height: 28px !important;
+    padding: 0 !important;
+    min-width: 28px !important;
+    border-color: #cbd5e1 !important;
+    background: #ffffff !important;
+    color: #64748b !important;
+}
+
+.fin-copy-btn:hover {
+    color: #0f172a !important;
+    border-color: #94a3b8 !important;
+    background: #f8fafc !important;
+}
+
+.fin-copy-btn .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+}
+
+.fin-copy-success {
+    border-color: #22c55e !important;
+    color: #16a34a !important;
+    background: #f0fdf4 !important;
+}

