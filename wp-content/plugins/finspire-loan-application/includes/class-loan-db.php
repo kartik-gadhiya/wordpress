@@ -45,6 +45,8 @@ class Finspire_Loan_DB {
             routing_number varchar(50) DEFAULT '',
             account_number_masked varchar(50) DEFAULT '',
             bank_verified tinyint(1) NOT NULL DEFAULT 1,
+            online_banking_verification varchar(255) DEFAULT '',
+            contact_consent tinyint(1) NOT NULL DEFAULT 1,
             employment_status varchar(100) DEFAULT '',
             monthly_income varchar(100) DEFAULT '',
             loan_purpose varchar(100) DEFAULT '',
@@ -65,6 +67,23 @@ class Finspire_Loan_DB {
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
+
+        self::check_columns();
+    }
+
+    /**
+     * Check and add columns dynamically if table already exists
+     */
+    public static function check_columns() {
+        global $wpdb;
+        $table_name = self::get_table_name();
+        $cols = $wpdb->get_col( "DESC $table_name", 0 );
+        if ( is_array( $cols ) && ! in_array( 'online_banking_verification', $cols, true ) ) {
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN online_banking_verification varchar(255) DEFAULT '' AFTER bank_verified" );
+        }
+        if ( is_array( $cols ) && ! in_array( 'contact_consent', $cols, true ) ) {
+            $wpdb->query( "ALTER TABLE $table_name ADD COLUMN contact_consent tinyint(1) NOT NULL DEFAULT 1 AFTER online_banking_verification" );
+        }
     }
 
     /**
@@ -127,6 +146,8 @@ class Finspire_Loan_DB {
             'routing_number'        => sanitize_text_field( $data['routing_number'] ?? '' ),
             'account_number_masked' => $acct_masked,
             'bank_verified'         => ! empty( $data['bank_verified'] ) ? 1 : 1,
+            'online_banking_verification' => sanitize_text_field( $data['online_banking_verification'] ?? '' ),
+            'contact_consent'             => ! empty( $data['contact_consent'] ) ? 1 : 0,
             'employment_status'     => sanitize_text_field( $data['employment_status'] ?? '' ),
             'monthly_income'        => sanitize_text_field( $data['monthly_income'] ?? '' ),
             'loan_purpose'          => sanitize_text_field( $data['loan_purpose'] ?? '' ),
@@ -144,9 +165,9 @@ class Finspire_Loan_DB {
             '%s', '%s', '%s', '%s', '%s',
             '%s', '%s', '%d', '%s', '%s',
             '%s', '%s', '%s', '%s', '%s',
-            '%s', '%d', '%s', '%s', '%s',
-            '%s', '%f', '%s', '%s', '%s',
-            '%s', '%s', '%s'
+            '%s', '%d', '%s', '%d', '%s', '%s',
+            '%s', '%s', '%f', '%s', '%s',
+            '%s', '%s', '%s', '%s'
         ];
 
         $result = $wpdb->insert( $table_name, $insert_data, $format );

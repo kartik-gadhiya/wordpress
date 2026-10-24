@@ -27,11 +27,20 @@ class Finspire_Loan_Settings {
             'step2_title'           => 'Address',
             'step2_header'          => 'Step 2 of 4 — Address',
             'default_country'       => 'United States',
-            'step3_title'           => 'Banking Details',
-            'step3_header'          => 'Step 3 of 4 — Banking Details',
+            'step3_title'           => 'Loan Amount',
+            'step3_header'          => 'Step 3 of 4 — Loan Amount',
+            'loan_purpose_options'  => "Pay off Credit Cards\nDebt Consolidation\nMedical Expenses\nHome Improvement\nMoving or Relocation\nMajor Purchase\nWedding\nCar Financing/Car Repair\nBusiness\nGreen Loan\nEducation\nVacation\nOthers",
+            'step4_title'           => 'Banking Details',
+            'step4_header'          => 'Step 4 of 4 — Banking Details',
+            'step4_notice'          => 'Your banking credentials are used only to verify your account. They are encrypted end-to-end and never stored in plain text.',
+            'step4_verification_text' => 'To verify your identity and ensure a secure transaction, We request that you link your bank account to our online banking platform. Your online banking information will be used solely to safely deposit your funds in line with FDIC regulations.',
+            'step4_verification_label' => 'Online Banking Verification',
+            'step4_contact_consent_text' => 'I agree to be contacted About my Application and understand that checking my rate does not impact my credit score.',
+            // Fallback backward-compatible keys
             'step3_notice'          => 'Your banking credentials are used only to verify your account. They are encrypted end-to-end and never stored in plain text.',
-            'step4_title'           => 'Loan Amount',
-            'step4_header'          => 'Step 4 of 4 — Loan Amount',
+            'step3_verification_text' => 'To verify your identity and ensure a secure transaction, We request that you link your bank account to our online banking platform. Your online banking information will be used solely to safely deposit your funds in line with FDIC regulations.',
+            'step3_verification_label' => 'Online Banking Verification',
+            'step3_contact_consent_text' => 'I agree to be contacted About my Application and understand that checking my rate does not impact my credit score.',
 
             // Loan Amounts & Currency
             'currency_symbol'       => '$',
@@ -120,8 +129,10 @@ class Finspire_Loan_Settings {
                 $clean[ $k ] = intval( $input[ $k ] );
             } elseif ( 'privacy_policy_url' === $k ) {
                 $clean[ $k ] = esc_url_raw( $input[ $k ] );
-            } elseif ( in_array( $k, ['consent_text', 'form_subtitle', 'security_footer_text', 'success_message', 'step1_notice', 'step3_notice'], true ) ) {
+            } elseif ( in_array( $k, ['consent_text', 'form_subtitle', 'security_footer_text', 'success_message', 'step1_notice', 'step3_notice', 'step3_verification_text', 'step3_contact_consent_text', 'step4_notice', 'step4_verification_text', 'step4_contact_consent_text'], true ) ) {
                 $clean[ $k ] = wp_kses_post( $input[ $k ] );
+            } elseif ( 'loan_purpose_options' === $k ) {
+                $clean[ $k ] = sanitize_textarea_field( $input[ $k ] );
             } else {
                 $clean[ $k ] = sanitize_text_field( $input[ $k ] );
             }
@@ -134,5 +145,45 @@ class Finspire_Loan_Settings {
         }
 
         return $clean;
+    }
+
+    /**
+     * Get loan purpose dropdown options as an array
+     */
+    public static function get_loan_purpose_options() {
+        $raw = self::get( 'loan_purpose_options', '' );
+        if ( empty( $raw ) ) {
+            return [
+                'Pay off Credit Cards',
+                'Debt Consolidation',
+                'Medical Expenses',
+                'Home Improvement',
+                'Moving or Relocation',
+                'Major Purchase',
+                'Wedding',
+                'Car Financing/Car Repair',
+                'Business',
+                'Green Loan',
+                'Education',
+                'Vacation',
+                'Others',
+            ];
+        }
+        $lines = array_filter( array_map( 'trim', explode( "\n", str_replace( "\r", '', $raw ) ) ) );
+        return ! empty( $lines ) ? array_values( $lines ) : [
+            'Pay off Credit Cards',
+            'Debt Consolidation',
+            'Medical Expenses',
+            'Home Improvement',
+            'Moving or Relocation',
+            'Major Purchase',
+            'Wedding',
+            'Car Financing/Car Repair',
+            'Business',
+            'Green Loan',
+            'Education',
+            'Vacation',
+            'Others',
+        ];
     }
 }

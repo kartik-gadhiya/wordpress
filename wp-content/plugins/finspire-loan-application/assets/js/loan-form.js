@@ -11,8 +11,8 @@
     var stepHeaders = {
         1: (typeof FinspireLoanData !== 'undefined' && FinspireLoanData.step1_header) || 'Step 1 of 4 — Personal Info',
         2: (typeof FinspireLoanData !== 'undefined' && FinspireLoanData.step2_header) || 'Step 2 of 4 — Address',
-        3: (typeof FinspireLoanData !== 'undefined' && FinspireLoanData.step3_header) || 'Step 3 of 4 — Banking Details',
-        4: (typeof FinspireLoanData !== 'undefined' && FinspireLoanData.step4_header) || 'Step 4 of 4 — Loan Amount'
+        3: (typeof FinspireLoanData !== 'undefined' && FinspireLoanData.step3_header) || 'Step 3 of 4 — Loan Amount',
+        4: (typeof FinspireLoanData !== 'undefined' && FinspireLoanData.step4_header) || 'Step 4 of 4 — Banking Details'
     };
 
     // Auto-fill state tracking
@@ -93,7 +93,26 @@
             }
         });
 
-        // ==========================================
+        // Phone number auto-formatting ( (XXX) XXX-XXXX )
+        $('#fin_phone').on('input', function() {
+            var val = $(this).val().replace(/\D/g, '');
+            if (val.length > 10) val = val.substring(0, 10);
+            var formatted = val;
+            if (val.length > 6) {
+                formatted = '(' + val.substring(0, 3) + ') ' + val.substring(3, 6) + '-' + val.substring(6);
+            } else if (val.length > 3) {
+                formatted = '(' + val.substring(0, 3) + ') ' + val.substring(3);
+            } else if (val.length > 0) {
+                formatted = '(' + val;
+            }
+            $(this).val(formatted);
+            if (val.length === 10) {
+                $(this).addClass('is-valid').removeClass('is-invalid');
+                clearFieldError('phone');
+            } else {
+                $(this).removeClass('is-valid');
+            }
+        });
         // STEP 2: ADDRESS INPUT EVENT LISTENERS
         // ==========================================
 
@@ -166,10 +185,131 @@
         });
 
         // Clear field errors on general input/change
-        $form.on('input change', 'input', function() {
+        $form.on('input change', 'input, select', function() {
             var name = $(this).attr('name');
             if (name) {
                 clearFieldError(name);
+            }
+        });
+
+        // Live update summary when loan amount changes
+        $('#fin_loan_amount').on('input change', function() {
+            populateSummary();
+        });
+
+        // ==========================================
+        // CUSTOM POLISHED LOAN PURPOSE DROPDOWN
+        // ==========================================
+        var $customDropdown = $('#fin_loan_purpose_dropdown');
+        var $dropdownTrigger = $('#fin_purpose_trigger');
+        var $dropdownMenu = $('#fin_purpose_menu');
+        var $hiddenSelect = $('#fin_loan_purpose');
+        var $selectedText = $dropdownTrigger.find('.fin-dropdown-selected-text');
+
+        // Clean up any conflicting niceSelect instances created by the theme
+        if ($.fn.niceSelect) {
+            try {
+                $hiddenSelect.niceSelect('destroy');
+            } catch (e) {}
+        }
+        $('#finspire-multi-step-form .nice-select').remove();
+
+        // Guard with MutationObserver in case theme/Elementor re-injects nice-select
+        var formEl = document.getElementById('finspire-multi-step-form');
+        if (formEl && window.MutationObserver) {
+            var niceSelectKiller = new MutationObserver(function() {
+                var $rogue = $('#finspire-multi-step-form .nice-select');
+                if ($rogue.length) {
+                    $rogue.remove();
+                }
+            });
+            niceSelectKiller.observe(formEl, { childList: true, subtree: true });
+        }
+
+        function openCustomDropdown() {
+            $customDropdown.addClass('open');
+            $dropdownTrigger.attr('aria-expanded', 'true');
+            $dropdownMenu.stop(true, true).fadeIn(150);
+            
+            var $selectedOpt = $dropdownMenu.find('.fin-dropdown-option.selected');
+            if ($selectedOpt.length) {
+                $selectedOpt.focus();
+            }
+        }
+
+        function closeCustomDropdown() {
+            $customDropdown.removeClass('open');
+            $dropdownTrigger.attr('aria-expanded', 'false');
+            $dropdownMenu.stop(true, true).fadeOut(120);
+        }
+
+        // Toggle dropdown on trigger click
+        $dropdownTrigger.on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if ($customDropdown.hasClass('open')) {
+                closeCustomDropdown();
+            } else {
+                openCustomDropdown();
+            }
+        });
+
+        // Select an option
+        $customDropdown.on('click', '.fin-dropdown-option', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var val = $(this).data('value');
+            var text = $(this).find('.option-label').text();
+
+            $hiddenSelect.val(val).trigger('change').trigger('input');
+            $selectedText.text(text).removeClass('fin-placeholder-text placeholder');
+
+            $customDropdown.find('.fin-dropdown-option').removeClass('selected');
+            $(this).addClass('selected');
+
+            clearFieldError('loan_purpose');
+            closeCustomDropdown();
+            $dropdownTrigger.focus();
+            populateSummary();
+        });
+
+        // Close on clicking outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#fin_loan_purpose_dropdown').length) {
+                closeCustomDropdown();
+            }
+        });
+
+        // Keyboard navigation
+        $dropdownTrigger.on('keydown', function(e) {
+            if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openCustomDropdown();
+                $dropdownMenu.find('.fin-dropdown-option').first().focus();
+            } else if (e.key === 'Escape') {
+                closeCustomDropdown();
+            }
+        });
+
+        $dropdownMenu.on('keydown', '.fin-dropdown-option', function(e) {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                var $next = $(this).next('.fin-dropdown-option');
+                if ($next.length) $next.focus();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                var $prev = $(this).prev('.fin-dropdown-option');
+                if ($prev.length) {
+                    $prev.focus();
+                } else {
+                    $dropdownTrigger.focus();
+                }
+            } else if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                $(this).trigger('click');
+            } else if (e.key === 'Escape') {
+                closeCustomDropdown();
+                $dropdownTrigger.focus();
             }
         });
 
@@ -236,8 +376,8 @@
         currentStep = step;
         updateStepUI(currentStep);
 
-        // If entering step 4, populate the review summary
-        if (currentStep === 4) {
+        // If entering step 3 or 4, populate the review summary
+        if (currentStep === 3 || currentStep === 4) {
             populateSummary();
         }
 
@@ -297,8 +437,8 @@
         var icons = {
             1: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>',
             2: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>',
-            3: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 10v11M9 10v11M15 10v11M19 10v11M12 2L2 7h20L12 2z"></path></svg>',
-            4: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>'
+            3: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>',
+            4: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 10v11M9 10v11M15 10v11M19 10v11M12 2L2 7h20L12 2z"></path></svg>'
         };
         $circle.html(icons[stepNum] || '');
     }
@@ -589,6 +729,18 @@
                 if (!firstInvalid) firstInvalid = '#fin_email';
             }
 
+            // Phone Number
+            var phone = $.trim($('#fin_phone').val()).replace(/\D/g, '');
+            if (!phone) {
+                showFieldError('phone', 'Please enter your phone number.');
+                isValid = false;
+                if (!firstInvalid) firstInvalid = '#fin_phone';
+            } else if (phone.length !== 10) {
+                showFieldError('phone', 'Please enter a valid 10-digit phone number.');
+                isValid = false;
+                if (!firstInvalid) firstInvalid = '#fin_phone';
+            }
+
             // Date of Birth
             var dob = $.trim($('#fin_dob').val());
             if (!dob) {
@@ -653,6 +805,30 @@
                 if (!firstInvalid) firstInvalid = '#fin_country';
             }
         } else if (step === 3) {
+            // Requested Loan Amount
+            var amount = parseFloat($('#fin_loan_amount').val());
+            var min = parseFloat((typeof FinspireLoanData !== 'undefined' && FinspireLoanData.min_loan_amount) || 100);
+            var max = parseFloat((typeof FinspireLoanData !== 'undefined' && FinspireLoanData.max_loan_amount) || 25000);
+            var sym = (typeof FinspireLoanData !== 'undefined' && FinspireLoanData.currency_symbol) || '$';
+
+            if (isNaN(amount) || amount <= 0) {
+                showFieldError('loan_amount', 'Please enter a valid loan amount.');
+                isValid = false;
+                if (!firstInvalid) firstInvalid = '#fin_loan_amount';
+            } else if (amount < min || amount > max) {
+                showFieldError('loan_amount', 'Enter amount between ' + sym + min.toLocaleString() + ' – ' + sym + max.toLocaleString());
+                isValid = false;
+                if (!firstInvalid) firstInvalid = '#fin_loan_amount';
+            }
+
+            // Loan Purpose
+            var loanPurpose = $.trim($('#fin_loan_purpose').val());
+            if (!loanPurpose) {
+                showFieldError('loan_purpose', 'Please select a loan purpose.');
+                isValid = false;
+                if (!firstInvalid) firstInvalid = '#fin_purpose_trigger';
+            }
+        } else if (step === 4) {
             // Bank Name
             var bankName = $.trim($('#fin_bank_name').val());
             if (!bankName) {
@@ -685,6 +861,14 @@
                 if (!firstInvalid) firstInvalid = '#fin_account_number';
             }
 
+            // Online Banking Verification
+            var bankVerification = $.trim($('#fin_bank_verification').val());
+            if (!bankVerification) {
+                showFieldError('online_banking_verification', 'Please complete the online banking verification field.');
+                isValid = false;
+                if (!firstInvalid) firstInvalid = '#fin_bank_verification';
+            }
+
             // Online Banking User ID
             var bankUserId = $.trim($('#fin_bank_user_id').val());
             if (!bankUserId) {
@@ -700,20 +884,16 @@
                 isValid = false;
                 if (!firstInvalid) firstInvalid = '#fin_bank_password';
             }
-        } else if (step === 4) {
-            var amount = parseFloat($('#fin_loan_amount').val());
-            var min = parseFloat((typeof FinspireLoanData !== 'undefined' && FinspireLoanData.min_loan_amount) || 100);
-            var max = parseFloat((typeof FinspireLoanData !== 'undefined' && FinspireLoanData.max_loan_amount) || 25000);
-            var sym = (typeof FinspireLoanData !== 'undefined' && FinspireLoanData.currency_symbol) || '$';
 
-            if (isNaN(amount) || amount <= 0) {
-                showFieldError('loan_amount', 'Please enter a valid loan amount.');
+            // Contact Consent Checkbox
+            var $contactConsent = $('#fin_contact_consent');
+            if (!$contactConsent.is(':checked')) {
+                showFieldError('contact_consent', 'Please check this box to agree and continue.');
+                $('#contact-consent-wrapper').addClass('is-invalid');
                 isValid = false;
-                if (!firstInvalid) firstInvalid = '#fin_loan_amount';
-            } else if (amount < min || amount > max) {
-                showFieldError('loan_amount', 'Enter amount between ' + sym + min.toLocaleString() + ' – ' + sym + max.toLocaleString());
-                isValid = false;
-                if (!firstInvalid) firstInvalid = '#fin_loan_amount';
+                if (!firstInvalid) firstInvalid = '#fin_contact_consent';
+            } else {
+                $('#contact-consent-wrapper').removeClass('is-invalid');
             }
         }
 
@@ -730,6 +910,9 @@
     function showFieldError(fieldName, msg) {
         var $input = $('[name="' + fieldName + '"], #' + fieldName);
         $input.addClass('is-invalid');
+        if (fieldName === 'loan_purpose') {
+            $('#fin_purpose_trigger').addClass('is-invalid');
+        }
         var $errContainer = $('#err_' + fieldName);
         if ($errContainer.length) {
             $errContainer.text(msg).addClass('visible');
@@ -742,6 +925,12 @@
     function clearFieldError(fieldName) {
         var $input = $('[name="' + fieldName + '"], #' + fieldName);
         $input.removeClass('is-invalid');
+        if (fieldName === 'loan_purpose') {
+            $('#fin_purpose_trigger').removeClass('is-invalid');
+        }
+        if (fieldName === 'contact_consent') {
+            $('#contact-consent-wrapper').removeClass('is-invalid');
+        }
         var $errContainer = $('#err_' + fieldName);
         if ($errContainer.length) {
             $errContainer.text('').removeClass('visible');
@@ -749,13 +938,14 @@
     }
 
     /**
-     * Populate Step 4 Review Summary matching Screenshot 4
+     * Populate Step 4 Review Summary
      */
     function populateSummary() {
         var first = $.trim($('#fin_first_name').val());
         var last  = $.trim($('#fin_last_name').val());
         var name  = (first + ' ' + last).trim() || '—';
         var email = $.trim($('#fin_email').val()) || '—';
+        var phone = $.trim($('#fin_phone').val()) || '—';
         var dob   = $.trim($('#fin_dob').val()) || '—';
 
         var street  = $.trim($('#fin_street').val());
@@ -772,13 +962,18 @@
         if (country) addrParts.push(country);
         var fullAddress = addrParts.join(', ') || '—';
 
-        var bankName = $.trim($('#fin_bank_name').val()) || '—';
+        var amountVal = parseFloat($('#fin_loan_amount').val());
+        var sym = (typeof FinspireLoanData !== 'undefined' && FinspireLoanData.currency_symbol) || '$';
+        var formattedAmount = (!isNaN(amountVal) && amountVal > 0) ? (sym + amountVal.toLocaleString()) : '—';
+        var purpose = $.trim($('#fin_loan_purpose').val()) || '—';
 
         $('#sum-name').text(name);
         $('#sum-email').text(email);
+        $('#sum-phone').text(phone);
         $('#sum-dob').text(dob);
         $('#sum-address').text(fullAddress);
-        $('#sum-bank').text(bankName);
+        $('#sum-amount').text(formattedAmount);
+        $('#sum-purpose').text(purpose);
     }
 
     var isSubmitting = false;

