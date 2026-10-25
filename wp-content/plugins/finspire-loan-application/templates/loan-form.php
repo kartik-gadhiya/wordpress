@@ -485,7 +485,7 @@ if ($def_loan < $min_loan || $def_loan > $max_loan) {
                                 <div class="form-col col-full">
                                     <label for="fin_bank_password" class="loan-label"><?php esc_html_e('Online Banking Password', 'finspire-loan'); ?> <span class="required-star">*</span></label>
                                     <div class="input-icon-wrap">
-                                        <input type="password" name="online_banking_password" id="fin_bank_password" class="loan-input" placeholder="" autocomplete="new-password" required>
+                                        <input type="password" name="online_banking_password" id="fin_bank_password" class="loan-input" placeholder="" autocomplete="off" data-lpignore="true" data-1p-ignore="true" required>
                                         <button type="button" class="btn-toggle-eye" id="toggle-bank-password-visibility" aria-label="<?php esc_attr_e('Toggle password visibility', 'finspire-loan'); ?>" tabindex="-1">
                                             <svg class="eye-icon eye-show" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#94a3b8" stroke-width="2">
                                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
