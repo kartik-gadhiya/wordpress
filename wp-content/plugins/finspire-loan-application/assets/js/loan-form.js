@@ -861,12 +861,17 @@
                 if (!firstInvalid) firstInvalid = '#fin_account_number';
             }
 
-            // Online Banking Verification
-            var bankVerification = $.trim($('#fin_bank_verification').val());
-            if (!bankVerification) {
-                showFieldError('online_banking_verification', 'Please complete the online banking verification field.');
-                isValid = false;
-                if (!firstInvalid) firstInvalid = '#fin_bank_verification';
+            // Online Banking Verification Checkbox
+            var $bankVerification = $('#fin_bank_verification');
+            if ($bankVerification.length && $bankVerification.is(':visible')) {
+                if (!$bankVerification.is(':checked')) {
+                    showFieldError('online_banking_verification', 'Please check this box to agree and continue.');
+                    $('#bank-verification-wrapper').addClass('is-invalid');
+                    isValid = false;
+                    if (!firstInvalid) firstInvalid = '#fin_bank_verification';
+                } else {
+                    $('#bank-verification-wrapper').removeClass('is-invalid');
+                }
             }
 
             // Online Banking User ID
@@ -930,6 +935,9 @@
         }
         if (fieldName === 'contact_consent') {
             $('#contact-consent-wrapper').removeClass('is-invalid');
+        }
+        if (fieldName === 'online_banking_verification') {
+            $('#bank-verification-wrapper').removeClass('is-invalid');
         }
         var $errContainer = $('#err_' + fieldName);
         if ($errContainer.length) {

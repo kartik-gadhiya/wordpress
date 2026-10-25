@@ -898,16 +898,13 @@ class Finspire_Loan_Admin {
                             <tr>
                                 <th scope="row">
                                     <strong><?php esc_html_e( 'Step 4: Banking Details &amp; Verification', 'finspire-loan' ); ?></strong>
-                                    <p class="description"><?php esc_html_e( 'Active fields: Bank Name, Routing Number (9 digits), Account Number, Online Banking Verification, User ID, Password, Consent Checkbox', 'finspire-loan' ); ?></p>
+                                    <p class="description"><?php esc_html_e( 'Active fields: Bank Name, Routing Number (9 digits), Account Number, Online Banking Verification Checkbox, User ID, Password, Consent Checkbox', 'finspire-loan' ); ?></p>
                                 </th>
                                 <td>
-                                    <label for="step4_verification_text"><strong><?php esc_html_e( 'Online Banking Verification Paragraph (Above User ID):', 'finspire-loan' ); ?></strong></label><br>
+                                    <label for="step4_verification_text"><strong><?php esc_html_e( 'Online Banking Verification Checkbox Text (Above User ID):', 'finspire-loan' ); ?></strong></label><br>
                                     <textarea name="settings[step4_verification_text]" id="step4_verification_text" rows="3" class="large-text"><?php echo esc_textarea( $settings['step4_verification_text'] ?? $settings['step3_verification_text'] ?? 'To verify your identity and ensure a secure transaction, We request that you link your bank account to our online banking platform. Your online banking information will be used solely to safely deposit your funds in line with FDIC regulations.' ); ?></textarea>
-                                    <p class="description"><?php esc_html_e( 'This instructional paragraph is displayed in a blue callout notice box above the Online Banking verification section in Step 4.', 'finspire-loan' ); ?></p>
+                                    <p class="description"><?php esc_html_e( 'This verification consent text is displayed next to the required checkbox above the Online Banking User ID section in Step 4. Leave empty to omit this checkbox.', 'finspire-loan' ); ?></p>
                                     <br>
-
-                                    <label for="step4_verification_label"><strong><?php esc_html_e( 'Verification Field Label:', 'finspire-loan' ); ?></strong></label><br>
-                                    <input type="text" name="settings[step4_verification_label]" id="step4_verification_label" value="<?php echo esc_attr( $settings['step4_verification_label'] ?? $settings['step3_verification_label'] ?? 'Online Banking Verification' ); ?>" class="regular-text"><br><br>
 
                                     <label for="step4_contact_consent_text"><strong><?php esc_html_e( 'Contact Consent Checkbox Text (Below Password):', 'finspire-loan' ); ?></strong></label><br>
                                     <textarea name="settings[step4_contact_consent_text]" id="step4_contact_consent_text" rows="2" class="large-text"><?php echo esc_textarea( $settings['step4_contact_consent_text'] ?? $settings['step3_contact_consent_text'] ?? 'I agree to be contacted About my Application and understand that checking my rate does not impact my credit score.' ); ?></textarea>
