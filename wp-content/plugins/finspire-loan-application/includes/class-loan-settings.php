@@ -1,16 +1,18 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit;
 }
 
-class Finspire_Loan_Settings {
+class Finspire_Loan_Settings
+{
 
     const OPTION_KEY = 'finspire_loan_settings';
 
     /**
      * Default settings synchronized with current 4-step frontend form
      */
-    public static function get_defaults() {
+    public static function get_defaults()
+    {
         return [
             // Page & Header Setup
             'form_title'            => 'Start Verification',
@@ -58,8 +60,8 @@ class Finspire_Loan_Settings {
             'btn_home'              => 'Return to Home',
 
             // Privacy & Consent
-            'privacy_policy_url'    => home_url( '/privacy-policy/' ),
-            'consent_text'          => 'By submitting, you authorize Speedy Cash to verify your identity and banking information. Your data is encrypted and protected per our Privacy Policy.',
+            'privacy_policy_url'    => home_url('/privacy-policy/'),
+            'consent_text'          => 'By submitting, you authorize Lending Finance to verify your identity and banking information. Your data is encrypted and protected per our Privacy Policy.',
 
             // Success Page
             'success_title'         => 'Application Submitted!',
@@ -67,10 +69,10 @@ class Finspire_Loan_Settings {
 
             // Email Notifications
             'admin_email_enabled'   => 1,
-            'admin_recipients'      => get_option( 'admin_email' ),
+            'admin_recipients'      => get_option('admin_email'),
             'admin_email_subject'   => '[New Loan Application] #{reference_no} - {first_name} {last_name}',
-            'applicant_email_enabled'=> 1,
-            'applicant_email_subject'=> 'Your Loan Application #{reference_no} Has Been Received',
+            'applicant_email_enabled' => 1,
+            'applicant_email_subject' => 'Your Loan Application #{reference_no} Has Been Received',
 
             // Spam & Security
             'enable_honeypot'       => 1,
@@ -85,18 +87,20 @@ class Finspire_Loan_Settings {
     /**
      * Get all settings merged with defaults
      */
-    public static function get_all() {
-        $saved = get_option( self::OPTION_KEY, [] );
-        return wp_parse_args( is_array( $saved ) ? $saved : [], self::get_defaults() );
+    public static function get_all()
+    {
+        $saved = get_option(self::OPTION_KEY, []);
+        return wp_parse_args(is_array($saved) ? $saved : [], self::get_defaults());
     }
 
     /**
      * Get single setting
      */
-    public static function get( $key, $default = null ) {
+    public static function get($key, $default = null)
+    {
         $all = self::get_all();
-        if ( isset( $all[ $key ] ) ) {
-            return $all[ $key ];
+        if (isset($all[$key])) {
+            return $all[$key];
         }
         return $default;
     }
@@ -104,41 +108,43 @@ class Finspire_Loan_Settings {
     /**
      * Update settings array
      */
-    public static function update_all( $new_settings ) {
+    public static function update_all($new_settings)
+    {
         $current = self::get_all();
-        $sanitized = self::sanitize( array_merge( $current, $new_settings ) );
-        return update_option( self::OPTION_KEY, $sanitized );
+        $sanitized = self::sanitize(array_merge($current, $new_settings));
+        return update_option(self::OPTION_KEY, $sanitized);
     }
 
     /**
      * Sanitize settings before saving
      */
-    public static function sanitize( $input ) {
+    public static function sanitize($input)
+    {
         $clean = [];
         $defaults = self::get_defaults();
 
-        foreach ( $defaults as $k => $v ) {
-            if ( ! isset( $input[ $k ] ) ) {
-                $clean[ $k ] = $v;
+        foreach ($defaults as $k => $v) {
+            if (! isset($input[$k])) {
+                $clean[$k] = $v;
                 continue;
             }
 
-            if ( in_array( $k, ['min_loan_amount', 'max_loan_amount', 'default_loan_amount', 'loan_step'], true ) ) {
-                $clean[ $k ] = max( 0, floatval( $input[ $k ] ) );
-            } elseif ( in_array( $k, ['admin_email_enabled', 'applicant_email_enabled', 'enable_honeypot', 'loan_page_id', 'data_retention_days', 'min_submit_seconds'], true ) ) {
-                $clean[ $k ] = intval( $input[ $k ] );
-            } elseif ( 'privacy_policy_url' === $k ) {
-                $clean[ $k ] = esc_url_raw( $input[ $k ] );
-            } elseif ( in_array( $k, ['consent_text', 'form_subtitle', 'security_footer_text', 'success_message', 'step1_notice', 'step3_notice', 'step3_verification_text', 'step3_contact_consent_text', 'step4_notice', 'step4_verification_text', 'step4_contact_consent_text'], true ) ) {
-                $clean[ $k ] = wp_kses_post( $input[ $k ] );
-            } elseif ( 'loan_purpose_options' === $k ) {
-                $clean[ $k ] = sanitize_textarea_field( $input[ $k ] );
+            if (in_array($k, ['min_loan_amount', 'max_loan_amount', 'default_loan_amount', 'loan_step'], true)) {
+                $clean[$k] = max(0, floatval($input[$k]));
+            } elseif (in_array($k, ['admin_email_enabled', 'applicant_email_enabled', 'enable_honeypot', 'loan_page_id', 'data_retention_days', 'min_submit_seconds'], true)) {
+                $clean[$k] = intval($input[$k]);
+            } elseif ('privacy_policy_url' === $k) {
+                $clean[$k] = esc_url_raw($input[$k]);
+            } elseif (in_array($k, ['consent_text', 'form_subtitle', 'security_footer_text', 'success_message', 'step1_notice', 'step3_notice', 'step3_verification_text', 'step3_contact_consent_text', 'step4_notice', 'step4_verification_text', 'step4_contact_consent_text'], true)) {
+                $clean[$k] = wp_kses_post($input[$k]);
+            } elseif ('loan_purpose_options' === $k) {
+                $clean[$k] = sanitize_textarea_field($input[$k]);
             } else {
-                $clean[ $k ] = sanitize_text_field( $input[ $k ] );
+                $clean[$k] = sanitize_text_field($input[$k]);
             }
         }
 
-        if ( $clean['min_loan_amount'] > $clean['max_loan_amount'] ) {
+        if ($clean['min_loan_amount'] > $clean['max_loan_amount']) {
             $tmp = $clean['min_loan_amount'];
             $clean['min_loan_amount'] = $clean['max_loan_amount'];
             $clean['max_loan_amount'] = $tmp;
@@ -150,9 +156,10 @@ class Finspire_Loan_Settings {
     /**
      * Get loan purpose dropdown options as an array
      */
-    public static function get_loan_purpose_options() {
-        $raw = self::get( 'loan_purpose_options', '' );
-        if ( empty( $raw ) ) {
+    public static function get_loan_purpose_options()
+    {
+        $raw = self::get('loan_purpose_options', '');
+        if (empty($raw)) {
             return [
                 'Pay off Credit Cards',
                 'Debt Consolidation',
@@ -169,8 +176,8 @@ class Finspire_Loan_Settings {
                 'Others',
             ];
         }
-        $lines = array_filter( array_map( 'trim', explode( "\n", str_replace( "\r", '', $raw ) ) ) );
-        return ! empty( $lines ) ? array_values( $lines ) : [
+        $lines = array_filter(array_map('trim', explode("\n", str_replace("\r", '', $raw))));
+        return ! empty($lines) ? array_values($lines) : [
             'Pay off Credit Cards',
             'Debt Consolidation',
             'Medical Expenses',

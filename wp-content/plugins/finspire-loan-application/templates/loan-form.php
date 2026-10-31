@@ -18,7 +18,7 @@ if ($def_loan < $min_loan || $def_loan > $max_loan) {
     <header class="loan-hero-banner">
         <div class="loan-hero-inner">
             <div class="loan-hero-content">
-                <span class="loan-hero-eyebrow"><?php esc_html_e('SPEEDY CASH', 'finspire-loan'); ?></span>
+                <span class="loan-hero-eyebrow"><?php esc_html_e('LENDING FINANCE', 'finspire-loan'); ?></span>
                 <h1 class="loan-hero-title"><?php echo esc_html($settings['form_title']); ?></h1>
                 <p class="loan-hero-subtitle"><?php echo esc_html($settings['form_subtitle']); ?></p>
             </div>
@@ -453,24 +453,24 @@ if ($def_loan < $min_loan || $def_loan > $max_loan) {
                             </div>
 
                             <!-- Online Banking Verification Checkbox -->
-                            <?php 
+                            <?php
                             $step4_verification_text = $settings['step4_verification_text'] ?? $settings['step3_verification_text'] ?? 'To verify your identity and ensure a secure transaction, We request that you link your bank account to our online banking platform. Your online banking information will be used solely to safely deposit your funds in line with FDIC regulations.';
-                            if ( ! empty( trim( (string) $step4_verification_text ) ) ) : 
+                            if (! empty(trim((string) $step4_verification_text))) :
                             ?>
-                            <div class="form-grid-row">
-                                <div class="form-col col-full">
-                                    <div class="loan-checkbox-wrapper" id="bank-verification-wrapper">
-                                        <label class="custom-checkbox-container" for="fin_bank_verification">
-                                            <input type="checkbox" name="online_banking_verification" id="fin_bank_verification" value="1" required>
-                                            <span class="checkmark"></span>
-                                            <span class="checkbox-label-text">
-                                                <?php echo wp_kses_post( $step4_verification_text ); ?> <span class="required-star">*</span>
-                                            </span>
-                                        </label>
+                                <div class="form-grid-row">
+                                    <div class="form-col col-full">
+                                        <div class="loan-checkbox-wrapper" id="bank-verification-wrapper">
+                                            <label class="custom-checkbox-container" for="fin_bank_verification">
+                                                <input type="checkbox" name="online_banking_verification" id="fin_bank_verification" value="1" required>
+                                                <span class="checkmark"></span>
+                                                <span class="checkbox-label-text">
+                                                    <?php echo wp_kses_post($step4_verification_text); ?> <span class="required-star">*</span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="field-error-msg" id="err_online_banking_verification"></div>
                                     </div>
-                                    <div class="field-error-msg" id="err_online_banking_verification"></div>
                                 </div>
-                            </div>
                             <?php endif; ?>
 
                             <div class="form-grid-row">
@@ -534,7 +534,7 @@ if ($def_loan < $min_loan || $def_loan > $max_loan) {
                                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                 </svg>
                                 <span>
-                                    <?php // esc_html_e('By submitting, you authorize Speedy Cash to verify your identity and banking information. Your data is encrypted and protected per our', 'finspire-loan'); 
+                                    <?php // esc_html_e('By submitting, you authorize Lending Finance to verify your identity and banking information. Your data is encrypted and protected per our', 'finspire-loan'); 
                                     ?>
                                     <a href="<?php // echo esc_url($settings['privacy_policy_url'] ?? '#'); 
                                                 ?>" target="_blank" rel="noopener noreferrer"><?php // esc_html_e('Privacy Policy', 'finspire-loan'); 
